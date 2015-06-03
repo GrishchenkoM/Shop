@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BusinessLogic.Repositories.Interfaces;
 using Domain;
 using Domain.Entities.Interfaces;
@@ -10,20 +10,25 @@ namespace BusinessLogic.Repositories.Implementations
     {
         public OrderRepository(DbDataContext dbDataContext)
         {
-            _dbDataContext = dbDataContext;
+            _context = dbDataContext;
         }
 
         public IOrder GetOrderById(int orderId)
         {
-            throw new NotImplementedException();
+            return _context.Orders.FirstOrDefault(x => x.Id == orderId);
         }
 
-        public IEnumerable<IOrder> GetOrdersByCustomer(int customerId)
+        public IEnumerable<IOrder> GetOrders()
         {
-            throw new NotImplementedException();
+            return _context.Orders;
         }
 
+        //public IEnumerable<IOrder> GetOrdersByCustomer(int customerId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        private DbDataContext _dbDataContext;
+
+        private readonly DbDataContext _context;
     }
 }
