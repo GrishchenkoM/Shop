@@ -73,8 +73,9 @@ namespace Domain
                 return list;
             }
         }
+        private readonly string _connectionString; // for ADO.NET
         #endregion
 
-        private readonly string _connectionString; // for ADO.NET
+        
     }
 }
