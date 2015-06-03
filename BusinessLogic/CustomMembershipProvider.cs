@@ -7,12 +7,20 @@ using BusinessLogic.Repositories.Interfaces;
 
 namespace BusinessLogic
 {
-    public class PrimaryMembershipProvider : MembershipProvider
+    public class CustomMembershipProvider : MembershipProvider
     {
-
+        [Inject]
         public ICustomerRepository CustomerRepository { get; set; }
         
+        public MembershipCreateStatus CreateUser(string userName, string password, string firstName, string lastName)
+        {
+            MembershipUser user = CustomerRepository.GetMembershipCustomerByName(userName);
+            if (user != null)
+                return MembershipCreateStatus.DuplicateUserName;
 
+            CustomerRepository.CreateCustomer(userName, password, firstName, lastName);
+            return MembershipCreateStatus.Success;
+        }
 
 
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer,
@@ -49,7 +57,7 @@ namespace BusinessLogic
 
         public override bool ValidateUser(string username, string password)
         {
-            throw new NotImplementedException();
+            return CustomerRepository.ValidateCustomer(username, password);
         }
 
         public override bool UnlockUser(string userName)
@@ -64,7 +72,7 @@ namespace BusinessLogic
 
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
-            throw new NotImplementedException();
+            return CustomerRepository.GetMembershipCustomerByName(username);
         }
 
         public override string GetUserNameByEmail(string email)
