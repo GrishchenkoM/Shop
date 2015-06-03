@@ -27,3 +27,5 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.vssscc
 $tf*/
+Web/App_Data/ShopDB_log.ldf
+Web/App_Data/ShopDB.mdf
