@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
-using Domain;
 
 namespace Web
 {
@@ -38,7 +32,8 @@ namespace Web
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            //DbDataContext db = new DbDataContext(ConfigurationManager.ConnectionStrings[0].ConnectionString);
+            // Заменяем стандартную фабрику контроллерова на ninjectControllerFactory
+            ControllerBuilder.Current.SetControllerFactory(new NinjectControllerFactory());
         }
     }
 }
