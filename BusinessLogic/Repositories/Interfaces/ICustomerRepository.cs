@@ -14,5 +14,6 @@ namespace BusinessLogic.Repositories.Interfaces
         bool ValidateCustomer(string userName, string password);
         void SaveCustomer(ICustomer customer);
         MembershipUser GetMembershipCustomerByName(string userName);
+        ICustomer GetCustomerByEmail(string email);
     }
 }

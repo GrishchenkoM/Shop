@@ -13,5 +13,6 @@ namespace Domain.Entities.Interfaces
         string Addres { get; set; }
         string Sex { get; set; }
         string Phone { get; set; }
+        string Email { get; set; }
     }
 }

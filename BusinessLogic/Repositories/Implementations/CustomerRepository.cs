@@ -83,7 +83,12 @@ namespace BusinessLogic.Repositories.Implementations
             return null;
         }
 
+        public ICustomer GetCustomerByEmail(string email)
+        {
+            return _context.Customers.FirstOrDefault(x => x.Email == email);
+        }
 
-        private DbDataContext _context;
+
+        private readonly DbDataContext _context;
     }
 }

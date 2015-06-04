@@ -10,8 +10,11 @@ namespace BusinessLogic
         [Inject]
         public ICustomerRepository CustomerRepository { get; set; }
         
-        public MembershipCreateStatus CreateUser(string userName, string password, string firstName, string lastName)
+        public MembershipCreateStatus CreateUser(string userName, string password, string email, string firstName, string lastName)
         {
+            if (CustomerRepository.GetCustomerByEmail(email) != null)
+                return MembershipCreateStatus.DuplicateEmail;
+
             MembershipUser user = CustomerRepository.GetMembershipCustomerByName(userName);
             if (user != null)
                 return MembershipCreateStatus.DuplicateUserName;
