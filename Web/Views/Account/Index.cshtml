@@ -1,8 +1,29 @@
-﻿@model dynamic
+﻿@using Web.Models
+@model LoginViewModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Добро пожаловать!";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<h2>Добро пожаловать в наш магазин!</h2>
+<div>
+    @using (Html.BeginForm())
+    {
+        <p>@Html.ValidationSummary(true)</p>
+        <p>
+            Логин: @Html.TextBoxFor(x=>x.UserName)
+            @Html.ValidationMessageFor(x=>x.UserName)
+        </p>
+        <p>
+            Пароль: @Html.EditorFor(x=>x.Password)
+            @Html.ValidationMessageFor(x=>x.Password)
+        </p>
+        <input type="submit" value="Войти"/>
+    }
+    
+    <p>
+        Для совершения покупок / продаж Вам необходимо сначала @Html.ActionLink("зарегистрироваться", "Register")
+    </p>
+
+</div>
