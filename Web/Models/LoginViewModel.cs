@@ -4,9 +4,9 @@ namespace Web.Models
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "*")]
+        [Required(ErrorMessage = "Введите логин")]
         public string UserName { get; set; }
-        [Required(ErrorMessage = "*")]
+        [Required(ErrorMessage = "Введите пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
