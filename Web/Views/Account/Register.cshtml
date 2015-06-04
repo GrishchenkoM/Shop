@@ -1,0 +1,46 @@
+﻿@model Web.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Регистрация на сайте";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Регистрация на сайте</h2>
+
+<div>
+    @using (Html.BeginForm())
+    {
+        <p>
+            @Html.ValidationSummary(true)
+        </p>
+        <p>
+            Логин: @Html.TextBoxFor(x=>x.UserName)
+            @Html.ValidationMessageFor(x=>x.UserName)
+        </p>
+        <p>
+            Пароль: @Html.EditorFor(x=>x.Password)
+            @Html.ValidationMessageFor(x=>x.Password)
+        </p>
+        <p>
+            Пароль еще раз: @Html.EditorFor(x=>x.ConfirmPassword)
+            @Html.ValidationMessageFor(x=>x.ConfirmPassword)
+        </p>
+        <p>
+            E-mail: @Html.TextBoxFor(x=>x.Email)
+            @Html.ValidationMessageFor(x=>x.Email)
+        </p>
+        <p>
+            Еще раз E-mail: @Html.TextBoxFor(x=>x.ConfirmEmail)
+            @Html.ValidationMessageFor(x=>x.ConfirmEmail)
+        </p>
+        <p>
+            Имя: @Html.TextBoxFor(x=>x.FirstName)
+            @Html.ValidationMessageFor(x=>x.FirstName)
+        </p>
+        <p>
+            Фамилия:@Html.TextBoxFor(x=>x.LastName)
+            @Html.ValidationMessageFor(x=>x.LastName)
+        </p>
+        <input type="submit" value="Завершить регистрацию"/>
+    }
+</div>
