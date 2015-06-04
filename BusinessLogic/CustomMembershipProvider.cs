@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Security;
 using BusinessLogic.Repositories.Interfaces;
+using Ninject;
 
 namespace BusinessLogic
 {
