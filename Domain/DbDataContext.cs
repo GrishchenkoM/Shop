@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
@@ -44,8 +45,12 @@ namespace Domain
                     while (dataReader.Read())
                     {
                         customer.Id = dataReader.GetInt32(0);
-                        customer.Name = dataReader.GetString(1);
-                        customer.Addres = dataReader.GetString(2);
+                        customer.FirstName = dataReader.GetString(1);
+                        customer.LastName = dataReader.GetString(2);
+                        customer.UserName = dataReader.GetString(3);
+                        customer.Password = dataReader.GetString(4);
+                        customer.Addres = dataReader.GetString(5);
+                        customer.CreatedDate = (DateTime)dataReader.GetValue(6);
                         customer.Sex = dataReader.GetString(3); 
                         customer.Phone = dataReader.GetValue(4) != null ? dataReader.GetString(4) : "";
                     }

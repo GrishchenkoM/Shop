@@ -15,5 +15,4 @@ namespace Domain.Entities
         public string Sex { get; set; }
         public string Phone { get; set; }
     }
-    
 }
