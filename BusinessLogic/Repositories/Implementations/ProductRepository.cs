@@ -16,7 +16,8 @@ namespace BusinessLogic.Repositories.Implementations
 
         public IEnumerable<IProduct> GetProducts()
         {
-            return _context.Products;
+            const string query = @"select * from Products";
+            return ExecuteQuery.GetProducts(_context, query);
         }
 
         public IProduct GetProductById(int productId)
@@ -32,6 +33,20 @@ namespace BusinessLogic.Repositories.Implementations
         public IEnumerable<IProduct> GetAvailableProducts()
         {
             return _context.Products.Where(x => x.IsAvailable);
+        }
+
+        public bool AddProduct(IProduct product)
+        {
+            string query = "INSERT INTO Products " +
+                           "(Name, IsAvailable, Cost, Image, Description) " +
+                           "VALUES ('{0}', {1}, {2}, @binaryValue, '{3}')";
+            query = string.Format(query,
+                          product.Name,
+                          Convert.ToSByte(product.IsAvailable),
+                          product.Cost,
+                          product.Description);
+
+            return ExecuteQuery.AddProduct(_context, query, (Object)product.Image);
         }
 
         private readonly DbDataContext _context;

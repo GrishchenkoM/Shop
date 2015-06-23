@@ -9,5 +9,7 @@ namespace BusinessLogic.Repositories.Interfaces
         IProduct GetProductById(int productId);
         //IEnumerable<IProduct> GetProductsByCustomer(int customerId);
         IEnumerable<IProduct> GetAvailableProducts();
+
+        bool AddProduct(IProduct product);
     }
 }
