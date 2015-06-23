@@ -5,6 +5,8 @@
         int Id { get; set; }
         string Name { get; set; }
         bool IsAvailable { get; set; }
-        int Cost { get; set; }
+        decimal Cost { get; set; }
+        byte[] Image { get; set; }
+        string Description { get; set; }
     }
 }
