@@ -16,22 +16,27 @@ namespace Domain
             Database.Connection.ConnectionString = connectionString;
             #endregion
 
-            #region ADONET
-            _connectionString = connectionString;
-            #endregion
         }
 
         #region EF
-
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
+        //public DbSet<Product> Products { get; set; }
+        public DbSet<ProductsCustomers> ProductsCustomerses { get; set; }
         #endregion
+
+        public string ConnectionString
+        {
+            get { return Db.ConnectionString; }
+        }
+
+        private IEnumerable<IProduct> _products;
+        public IEnumerable<IProduct> Products { get; private set; }
 
         #region ADONET
         public ICustomer GetCustomerById(int customerId)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 conn.Open();
                 string str = "SELECT * FROM Customers WHERE Id = @customerId";
@@ -61,7 +66,7 @@ namespace Domain
         }
         public IEnumerable<ICustomer> GetCustomersByProduct(int productId)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
             {
                 List<ICustomer> list = null;
                 conn.Open();
@@ -78,7 +83,7 @@ namespace Domain
                 return list;
             }
         }
-        private readonly string _connectionString; // for ADO.NET
+        //private readonly string _connectionString; // for ADO.NET
         #endregion
 
         
