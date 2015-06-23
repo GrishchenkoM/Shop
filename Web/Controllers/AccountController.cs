@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using BusinessLogic;
@@ -32,6 +32,31 @@ namespace Web.Controllers
             return View(model);
         }
 
+        public ActionResult LogIn()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult LogIn(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_dataManager.Provider.ValidateUser(model.UserName, model.Password))
+                {
+                    var customer = _dataManager.Customers.GetCustomers()
+                                                .FirstOrDefault(x => x.UserName == model.UserName);
+                    int tempId = -1;
+                    if (customer != null)
+                        tempId = customer.Id;
+                    FormsAuthentication.SetAuthCookie(model.UserName, false);
+                    return RedirectToAction("Index", "Home", new { id = tempId});
+                }
+                ModelState.AddModelError("", "Неудачная попытка входа на сайт");
+            }
+            return View(model);
+        }
+
+
         public ActionResult Register()
         {
             return View();
@@ -54,6 +79,12 @@ namespace Web.Controllers
             }
             return View(model);
         }
+        
+        public ActionResult LogOut()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index");
+        }
 
         public string GetMembershipCreateStatusResultText(MembershipCreateStatus status)
         {
@@ -65,6 +96,6 @@ namespace Web.Controllers
         }
 
 
-        private DataManager _dataManager;
+        private readonly DataManager _dataManager;
     }
 }
