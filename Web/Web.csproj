@@ -35,14 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.4.1.10331.0\lib\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Domain\bin\Debug\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Ninject-3.0.0.15-release-net-4.0\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -69,11 +68,14 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TextController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\CreateProduct.cs" />
+    <Compile Include="Models\PriceViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="NinjectControllerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +85,36 @@
     <Content Include="App_Data\ShopDB_log.ldf">
       <DependentUpon>ShopDB.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\css\ie6.css" />
+    <Content Include="Content\css\images\big1.jpg" />
+    <Content Include="Content\css\images\big2.jpg" />
+    <Content Include="Content\css\images\big3.jpg" />
+    <Content Include="Content\css\images\body.gif" />
+    <Content Include="Content\css\images\bul.gif" />
+    <Content Include="Content\css\images\cart-link.gif" />
+    <Content Include="Content\css\images\cat.gif" />
+    <Content Include="Content\css\images\h2-arr.gif" />
+    <Content Include="Content\css\images\header.gif" />
+    <Content Include="Content\css\images\ico1.gif" />
+    <Content Include="Content\css\images\ico2.gif" />
+    <Content Include="Content\css\images\ico3.gif" />
+    <Content Include="Content\css\images\ico4.gif" />
+    <Content Include="Content\css\images\info.png" />
+    <Content Include="Content\css\images\logo.gif" />
+    <Content Include="Content\css\images\next.gif" />
+    <Content Include="Content\css\images\prev.gif" />
+    <Content Include="Content\css\images\slide1.jpg" />
+    <Content Include="Content\css\images\small1.jpg" />
+    <Content Include="Content\css\images\small2.jpg" />
+    <Content Include="Content\css\images\small3.jpg" />
+    <Content Include="Content\css\images\small4.jpg" />
+    <Content Include="Content\css\images\small5.jpg" />
+    <Content Include="Content\css\images\small6.jpg" />
+    <Content Include="Content\css\images\small7.jpg" />
+    <Content Include="Content\css\style.css" />
+    <Content Include="Scripts\js\jquery-1.4.1.min.js" />
+    <Content Include="Scripts\js\jquery-func.js" />
+    <Content Include="Scripts\js\jquery.jcarousel.pack.js" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -166,13 +198,34 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Text\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Account\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\Success.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\LogIn.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_MainContent.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\EditMenu.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Create.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Find.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Log.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Finality.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Edit.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

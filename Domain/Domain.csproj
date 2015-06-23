@@ -35,7 +35,9 @@
       <HintPath>..\packages\EntityFramework.4.1.10331.0\lib\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,13 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Db.cs" />
     <Compile Include="DbDataContext.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Interfaces\ICustomer.cs" />
     <Compile Include="Entities\Interfaces\IOrder.cs" />
     <Compile Include="Entities\Interfaces\IProduct.cs" />
+    <Compile Include="Entities\Interfaces\IProductsCustomers.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\ProductsCustomers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

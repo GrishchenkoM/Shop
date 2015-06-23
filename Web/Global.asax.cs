@@ -32,7 +32,7 @@ namespace Web
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            // Заменяем стандартную фабрику контроллерова на ninjectControllerFactory
+            // Заменяем стандартную фабрику контроллеров на ninjectControllerFactory
             ControllerBuilder.Current.SetControllerFactory(new NinjectControllerFactory());
         }
     }
