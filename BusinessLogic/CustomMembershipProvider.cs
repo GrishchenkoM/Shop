@@ -19,7 +19,7 @@ namespace BusinessLogic
             if (user != null)
                 return MembershipCreateStatus.DuplicateUserName;
 
-            CustomerRepository.CreateCustomer(userName, password, firstName, lastName);
+            CustomerRepository.CreateCustomer(userName, password, firstName, lastName, email);
             return MembershipCreateStatus.Success;
         }
 
