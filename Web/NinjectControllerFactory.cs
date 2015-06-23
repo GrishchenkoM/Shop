@@ -29,6 +29,7 @@ namespace Web
             _ninjectKernel.Bind<ICustomerRepository>().To<CustomerRepository>();
             _ninjectKernel.Bind<IOrderRepository>().To<OrderRepository>();
             _ninjectKernel.Bind<IProductRepository>().To<ProductRepository>();
+            _ninjectKernel.Bind<IProductsCustomersRepository>().To<ProductsCustomersRepository>();
             _ninjectKernel.Bind<DbDataContext>()
                           .ToSelf()
                           .WithConstructorArgument("connectionString",
