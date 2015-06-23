@@ -1,0 +1,97 @@
+﻿@using Web.Models
+@model CreateProduct
+
+<script>
+    function UploadImage() {
+        if (document.getElementById('image').value == "")
+            document.getElementById('image').style.cssText =
+                "color:red;font-weight:900; font-size:120%";
+        else {
+            document.getElementById('image').style.cssText =
+                "color:black;font-weight:100; font-size:100%";
+        }
+    }
+
+    
+</script>
+
+@section Context{
+    <div class="box-content">
+        @using (Html.BeginForm("Create", "Home",
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <fieldset>
+            <table id="table">
+                <tr>
+                    <td>Название товара:</td>
+                    <td>@Html.TextAreaFor(x => x.Name, new
+                   {
+                       id = "productName",
+                       style = "width: 500px; height: 70px; resize: none;",
+                       maxlength = 249,
+                       size = 250,
+                       placeholder = "Введите текст"
+                   })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Name)</td>
+                </tr>
+                <tr>
+                    <td>Фото:</td>
+                    <td>
+                        <p><input accept="image/*" id="image" name="uploadImage" type="file" /></p>
+                        <script>UploadImage()</script>
+                    </td>
+                    <td>
+                        <div id="imagePosition">
+                        @if (Model != null && Model.Image != null)
+                        {
+                            @Html.Raw("<img style='width:80px; height:60px;' src=\"data:image/jpeg;base64,"
+                                      + Convert.ToBase64String(@Model.Image) + "\" />")
+                        }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Описание</td>
+                    <td>@Html.TextAreaFor(x => x.Description, new
+                   {
+                       id = "Description",
+                       style = "width: 500px; height: 220px; resize: none;",
+                       maxlength = 999,
+                       size = 1000,
+                       placeholder = "Введите текст"
+                   })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Description)</td>
+                </tr>
+                <tr>
+                    <td>Стоимость:</td>
+                    <td>@Html.TextBoxFor(x => x.Cost, new { id = "Cost", maxlength = 10, size = 10 })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Cost)</td>
+                </tr>
+                <tr>
+                    <td>Количество:</td>
+                    <td>@Html.TextBoxFor(x => x.Count, new { id = "Count", maxlength = 10, size = 10 })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Count)</td>
+                </tr>
+                <tr>
+                    <td>Есть в наличии</td>
+                    <td>@Html.CheckBoxFor(x=>x.IsAvailable)</td>
+                </tr>
+            </table>
+            </fieldset>
+            <br/>
+            <div>
+                <input type="submit" value="Сохранить" onclick="UploadImage()"/>
+            </div>
+        }
+    </div>
+}
+
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+}

@@ -1,0 +1,14 @@
+﻿@section Context{
+    <p><button onclick="location.href='@Url.Action("Create", "Home")'">Создать</button></p>
+    <p><button onclick="location.href='@Url.Action("Find", "Home")'">Найти</button></p>
+    <p><button onclick="location.href='@Url.Action("Log", "Home")'">Журнал</button></p>
+}
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    
+}

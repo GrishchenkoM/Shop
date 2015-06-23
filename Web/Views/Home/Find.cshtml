@@ -1,0 +1,63 @@
+﻿@using Domain.Entities.Interfaces
+@model IEnumerable<IProduct>
+@section Context{
+    <div class="box-content">
+        <div>
+            @using (Html.BeginForm())
+            {
+                <p>
+                    Найти товар:
+                </p>
+                <p>@Html.TextBox("name")</p>
+                <p>
+                    <input type="submit" value="Найти товар"/>
+                </p>
+            }
+        </div>
+        <div>
+            @if (Model != null)
+            {
+                <div class="box-content">
+                <p>Результаты поиска:</p>
+                @foreach (IProduct product in Model)
+                {
+                    <fieldset>
+                        <div class="product-info">
+                            <p>@Html.ActionLink(product.Name,"Find", "Home", new { id = product.Id},null)</p>
+                            <div>Line</div>
+                            <ul>
+                                <div id="image">
+                                    @if (product.Image != null)
+                                    {
+                                        @Html.Raw("<img style='width:80px; height:60px;' src=\"data:image/jpeg;base64,"
+                                                  + Convert.ToBase64String(product.Image) + "\" />")
+                                    }
+                                    else
+                                    {
+                                        @Html.Label("Фото отсутствует")
+                                    }
+                                </div>
+                                <div id="cost">
+                                    @product.Cost
+                                </div>
+                                <div id="description">
+                                    @product.Description
+                                </div>
+                            </ul>
+                        </div>
+                    </fieldset>
+                    }
+                    </div>
+            }
+        </div>
+    </div>
+}
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+}

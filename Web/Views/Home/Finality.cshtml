@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = ViewBag.Message;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Context{
+    <div class="box-content">
+        <div class="links-content">
+            <h2>@ViewBag.Title</h2>
+            <br/>
+        
+            @if (ViewBag.Message == "Товар добавлен!")
+            {
+                <p>Поздравляем! Вы добавили в магазин свой товар!</p>
+            }
+            else
+            {
+                <p>Сожалеем, но при добавлении товара произошел сбой. Попробуйте еще раз.</p>
+            }
+            <br/>
+            <p>Для добавления товара перейдите на страницу <q>@Html.ActionLink("Создать", "Create", "Home")</q>.</p>
+            <br/>
+            <p>Для добавления товара перейдите на страницу <q>@Html.ActionLink("Найти", "Find", "Home")</q>.</p>
+            <br/>
+            <p>Для добавления товара перейдите на страницу <q>@Html.ActionLink("Журнал", "Log", "Home")</q>.</p>
+        </div>
+    </div>
+}
+
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+}
