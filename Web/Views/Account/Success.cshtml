@@ -1,9 +1,29 @@
 ﻿@{
     ViewBag.Title = "Регистрация прошла успешно!";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Регистрация</h2>
-<p>
-    Теперь Вы можете выполнить @Html.ActionLink("вход на сайт","Index","Home").
-</p>
+
+
+
+
+@section Context{
+    <div class="box-content">
+        <h2>@ViewBag.Title</h2>
+        <br/>
+        <p>
+            Теперь Вы можете выполнить @Html.ActionLink("вход на сайт", "Index", "Account").
+        </p>
+    </div>
+}
+
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Войти", "Index", "Account")</li></ul>
+    </div>
+}
+
+@section EditOrBuy
+{
+    
+}

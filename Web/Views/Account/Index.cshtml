@@ -1,29 +1,28 @@
-﻿@using Web.Models
+﻿@using System.Collections
+@using Domain.Entities
+@using Web.Models
 @model LoginViewModel
 
 @{
     ViewBag.Title = "Добро пожаловать!";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Добро пожаловать в наш магазин!</h2>
-<div>
-    @using (Html.BeginForm())
-    {
-        <p>@Html.ValidationSummary(true)</p>
+@*<h2>Добро пожаловать в наш магазин!</h2>*@
+@section LoginOrRegister{
+    <div>
         <p>
-            Логин: @Html.TextBoxFor(x=>x.UserName)
-            @Html.ValidationMessageFor(x=>x.UserName)
+            @Html.ActionLink("Войти", "LogIn")@Html.ActionLink("Зарегистрироваться", "Register")
         </p>
-        <p>
-            Пароль: @Html.EditorFor(x=>x.Password)
-            @Html.ValidationMessageFor(x=>x.Password)
-        </p>
-        <input type="submit" value="Войти"/>
-    }
-    
-    <p>
-        Для совершения покупок / продаж Вам необходимо сначала @Html.ActionLink("зарегистрироваться", "Register")
-    </p>
+    </div>
 
-</div>
+}
+
+@section Context{
+
+
+}
+
+@section EditOrBuy
+{
+    
+}
