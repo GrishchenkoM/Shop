@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using Domain;
 using Domain.Entities;
 using Domain.Entities.Interfaces;
@@ -160,7 +161,14 @@ namespace BusinessLogic
             }
         }
 
-        public static bool ChangeProduct(DbDataContext context, string query, params Object[] parameters)
+        /// <summary>
+        /// Makes changes (create, update, delete)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="query"></param>
+        /// <param name="parameters"></param>
+        /// <returns>Last ID</returns>
+        public static int ChangeProduct(DbDataContext context, string query, params Object[] parameters)
         {
             using (var connection = new SqlConnection(context.ConnectionString))
             {
@@ -169,12 +177,12 @@ namespace BusinessLogic
                 {
                     command.CommandText = query;
                     if (parameters.Length != 0)
-                        command.Parameters.Add("@binaryValue", SqlDbType.Image).Value = (byte[])parameters[0];
-                    
-                    if (command.ExecuteNonQuery() == -1)
-                        return false;
-                    else
-                        return true;
+                            command.Parameters.Add("@binaryValue", SqlDbType.Image).Value = 
+                                (byte[])parameters[0];
+                    if (command.ExecuteNonQuery() == -1) return -1;
+                    if (query.Contains("DELETE")) return 1;
+                    command.CommandText = "SELECT @@IDENTITY";
+                    return Convert.ToInt32(command.ExecuteScalar());
                 }
             }
         }
