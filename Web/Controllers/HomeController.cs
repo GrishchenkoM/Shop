@@ -58,10 +58,19 @@ namespace Web.Controllers
                     };
 
                 int result;
-                if (!_dataManager.Products.AddProduct(item))
+                _dataManager.Products.AddProduct(item);
+                var curProduct = _dataManager.Products.GetProducts()
+                                             .FirstOrDefault(
+                                                 x =>
+                                                 x.Name == item.Name 
+                                                 && x.Image == item.Image 
+                                                 && x.Cost == item.Cost);
+                _dataManager.ProductsCustomers.AddRelation(, curProduct.Id);
+
+                if (!)
                     result = (int)Result.Error;
                 else
-                    result = (int)Result.Success;
+                    result = (int)Result.AdditionSuccess;
 
                 return RedirectToAction("Finality", new { id = result });
             }
@@ -85,33 +94,80 @@ namespace Web.Controllers
             
             return View(model);
         }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="id">Id товара</param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public ActionResult Find(int id = -1)
-        //{
-        //    IEnumerable<IProduct> model;
-        //    if (id == -1)
-        //        model = _dataManager.Products.GetProducts().Where(x => x.Id == id); // связать с customerId
-        //    return RedirectToAction("Edit", "Home", new { id = 0 }); // !!!!!!! id = 0!!!
-        //}
-
-        public ActionResult Edit(IProduct id)
+        
+        public ActionResult Edit(int id)
         {
-            var model = new CreateProduct
-                {
-                    Name = id.Name,
-                    Cost = id.Cost,
-                    Image = id.Image,
-                    Description = id.Description,
-                    IsAvailable = id.IsAvailable
-                };
-            return View(model);
+            var product = _dataManager.Products.GetProducts()
+                .FirstOrDefault(x => x.Id == id);
+            if (product == null)
+                return RedirectToAction("Pity");
+
+            _model = new CreateProduct();
+            _model.Id = id;
+            _model.Name = product.Name;
+            _model.Cost = product.Cost;
+            _model.Image = product.Image;
+            _model.Description = product.Description;
+            _model.IsAvailable = product.IsAvailable;
+            return View(_model);
         }
+
+        [HttpPost]
+        public ActionResult Edit(CreateProduct model, FormCollection form, HttpPostedFileBase uploadImage)
+        {
+            bool answer = false;
+            int result;
+
+            if (form.GetKey(6) == "delete")
+            {
+                if (_dataManager.Products != null)
+                    answer = _dataManager.Products.DeleteProduct(model.Id);
+            }
+            else
+            {
+                if (!ModelState.IsValid) return View(model);
+                var oldProduct = _dataManager.Products.GetProducts()
+                        .FirstOrDefault(x => x.Id == model.Id);
+                if (oldProduct == null)
+                    return RedirectToAction("Pity");
+
+                IProduct item = new Product
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Cost = model.Cost,
+                        IsAvailable = model.IsAvailable
+                    };
+
+                if (uploadImage != null)
+                {
+                    // считываем переданный файл в массив байтов
+                    byte[] imageData;
+                    using (var binaryReader = new BinaryReader(uploadImage.InputStream))
+                        imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
+                    // установка массива байтов
+                    item.Image = imageData;
+                }
+                else
+                {
+                    item.Image = oldProduct.Image;
+                }
+
+                //item.Id = oldProduct.Id;
+
+                if (_dataManager.Products != null)
+                    answer = _dataManager.Products.UpdateProduct(item);
+            }
+
+            if (!answer)
+                result = (int) Result.Error;
+            else
+                result = (int) Result.OperationSuccess;
+
+            return RedirectToAction("Finality", new {id = result});
+        }
+
 
         public ActionResult Log()
         {
@@ -120,7 +176,22 @@ namespace Web.Controllers
 
         public ActionResult Finality(int id)
         {
-            ViewBag.Message = id != 0 ? "Товар добавлен!" : "Произошла непредвиденная ошибка при добавдении товара";
+            switch (id)
+            {
+                case 0:
+                    ViewBag.Message = "Произошла непредвиденная ошибка при добавдении товара";
+                    break;
+                case 1:
+                    ViewBag.Message = "Товар добавлен!";
+                    break;
+                case 2: ViewBag.Message = "Готово!";
+                    break;
+            }
+            return View();
+        }
+
+        public ActionResult Pity()
+        {
             return View();
         }
 
@@ -128,9 +199,10 @@ namespace Web.Controllers
 
         private readonly DataManager _dataManager;
         private int _currentCustomerId;
+        private CreateProduct _model;
         private enum Result
         {
-            Error,Success
+            Error, AdditionSuccess, OperationSuccess
         }
     }
 }
