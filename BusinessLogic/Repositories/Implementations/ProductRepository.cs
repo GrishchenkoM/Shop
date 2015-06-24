@@ -35,7 +35,7 @@ namespace BusinessLogic.Repositories.Implementations
             return _context.Products.Where(x => x.IsAvailable);
         }
 
-        public bool AddProduct(IProduct product)
+        public int AddProduct(IProduct product)
         {
             string query = "INSERT INTO Products " +
                            "(Name, IsAvailable, Cost, Image, Description) " +
@@ -49,7 +49,7 @@ namespace BusinessLogic.Repositories.Implementations
             return ExecuteQuery.ChangeProduct(_context, query, (Object)product.Image);
         }
 
-        public bool UpdateProduct(IProduct item)
+        public int UpdateProduct(IProduct item)
         {
             string query = "UPDATE Products " +
                            "SET Name = '{0}', IsAvailable = {1}, Cost = CAST('{2}' AS money), Image = @binaryValue, Description = '{3}' " +
@@ -68,7 +68,9 @@ namespace BusinessLogic.Repositories.Implementations
             string query = "DELETE FROM Products WHERE Products.Id = {0}";
             query = string.Format(query, id);
 
-            return ExecuteQuery.ChangeProduct(_context, query);
+            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+                return false;
+            return true;
         }
 
         private readonly DbDataContext _context;

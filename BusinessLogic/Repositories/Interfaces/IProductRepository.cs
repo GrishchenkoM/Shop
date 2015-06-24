@@ -10,9 +10,9 @@ namespace BusinessLogic.Repositories.Interfaces
         //IEnumerable<IProduct> GetProductsByCustomer(int customerId);
         IEnumerable<IProduct> GetAvailableProducts();
 
-        bool AddProduct(IProduct product);
+        int AddProduct(IProduct product);
 
-        bool UpdateProduct(IProduct item);
+        int UpdateProduct(IProduct item);
 
         bool DeleteProduct(int id);
     }
