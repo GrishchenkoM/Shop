@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -20,8 +21,9 @@ namespace Web.Controllers
 
         public ActionResult Index(int id = -1)
         {
-            if (id != -1)
-                _currentCustomerId = id;
+            if (id == -1) 
+                return RedirectToAction("LogIn", "Account");
+            Session.Add("UserId", id);
             return View();
         }
 
@@ -38,50 +40,74 @@ namespace Web.Controllers
         public ActionResult Create(CreateProduct model, HttpPostedFileBase uploadImage)
         {
             if (uploadImage != null)
-            {
-                // считываем переданный файл в массив байтов
-                byte[] imageData;
-                using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-                    imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-                // установка массива байтов
-                model.Image = imageData;
-            }
+                ReadImage(model, uploadImage);
+            
             if (ModelState.IsValid && uploadImage != null)
             {
-                IProduct item = new Product
-                    {
-                        Name = model.Name,
-                        Image = model.Image,
-                        Description = model.Description,
-                        Cost = model.Cost,
-                        IsAvailable = model.IsAvailable
-                    };
+                IProduct item = new Product();
+                ReadModel(model, item);
 
-                int result;
-                _dataManager.Products.AddProduct(item);
-                var curProduct = _dataManager.Products.GetProducts()
-                                             .FirstOrDefault(
-                                                 x =>
-                                                 x.Name == item.Name 
-                                                 && x.Image == item.Image 
-                                                 && x.Cost == item.Cost);
-                _dataManager.ProductsCustomers.AddRelation(, curProduct.Id);
-
-                if (!)
-                    result = (int)Result.Error;
-                else
-                    result = (int)Result.AdditionSuccess;
-
-                return RedirectToAction("Finality", new { id = result });
+                return Redirect(CreateProduct(model, item));
             }
             return View(model);
         }
+        
+        public ActionResult Edit(int id)
+        {
+            var product = _dataManager.Products.GetProducts()
+                .FirstOrDefault(x => x.Id == id);
+            if (product == null)
+                return RedirectToAction("Pity");
 
+            Session.Add("ProductId", id);
+            _model = new CreateProduct
+            {
+                Name = product.Name,
+                Cost = product.Cost,
+                Image = product.Image,
+                Description = product.Description,
+                IsAvailable = product.IsAvailable
+            };
+
+            return View(_model);
+        }
+        [HttpPost]
+        public ActionResult Edit(CreateProduct model, FormCollection form, HttpPostedFileBase uploadImage)
+        {
+            bool answer = false;
+            int result;
+
+            if (form.GetKey(form.Keys.Count - 1) == "delete") // if input 'delete' stands always in the end
+                if (_dataManager.Products != null)
+                    answer = DeleteProduct(model);
+            else
+            {
+                if (!ModelState.IsValid) return View(model);
+                var oldProduct = _dataManager.Products.GetProducts()
+                        .FirstOrDefault(x => x.Id == model.Id);
+                if (oldProduct == null)
+                    return RedirectToAction("Pity");
+
+                IProduct item = new Product();
+                ReadModel(model, item);
+                item.Id = (int)Session["ProductId"];
+
+                if (uploadImage != null)
+                    ReadImage(item, uploadImage);
+                else
+                    item.Image = oldProduct.Image;
+                
+                if (_dataManager.Products != null)
+                    answer = UpdateProduct(item, model);
+            }
+
+            return Redirect(answer);
+        }
+        
         public ActionResult Find()
         {
             return View();
         }
-        
         [HttpPost]
         public ActionResult Find(string name)
         {
@@ -95,80 +121,6 @@ namespace Web.Controllers
             return View(model);
         }
         
-        public ActionResult Edit(int id)
-        {
-            var product = _dataManager.Products.GetProducts()
-                .FirstOrDefault(x => x.Id == id);
-            if (product == null)
-                return RedirectToAction("Pity");
-
-            _model = new CreateProduct();
-            _model.Id = id;
-            _model.Name = product.Name;
-            _model.Cost = product.Cost;
-            _model.Image = product.Image;
-            _model.Description = product.Description;
-            _model.IsAvailable = product.IsAvailable;
-            return View(_model);
-        }
-
-        [HttpPost]
-        public ActionResult Edit(CreateProduct model, FormCollection form, HttpPostedFileBase uploadImage)
-        {
-            bool answer = false;
-            int result;
-
-            if (form.GetKey(6) == "delete")
-            {
-                if (_dataManager.Products != null)
-                    answer = _dataManager.Products.DeleteProduct(model.Id);
-            }
-            else
-            {
-                if (!ModelState.IsValid) return View(model);
-                var oldProduct = _dataManager.Products.GetProducts()
-                        .FirstOrDefault(x => x.Id == model.Id);
-                if (oldProduct == null)
-                    return RedirectToAction("Pity");
-
-                IProduct item = new Product
-                    {
-                        Id = model.Id,
-                        Name = model.Name,
-                        Description = model.Description,
-                        Cost = model.Cost,
-                        IsAvailable = model.IsAvailable
-                    };
-
-                if (uploadImage != null)
-                {
-                    // считываем переданный файл в массив байтов
-                    byte[] imageData;
-                    using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-                        imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-                    // установка массива байтов
-                    item.Image = imageData;
-                }
-                else
-                {
-                    item.Image = oldProduct.Image;
-                }
-
-                //item.Id = oldProduct.Id;
-
-                if (_dataManager.Products != null)
-                    answer = _dataManager.Products.UpdateProduct(item);
-            }
-
-            if (!answer)
-                result = (int) Result.Error;
-            else
-                result = (int) Result.OperationSuccess;
-
-            return RedirectToAction("Finality", new {id = result});
-        }
-
-
         public ActionResult Log()
         {
             return View();
@@ -196,6 +148,84 @@ namespace Web.Controllers
         }
 
         public int Id { get; private set; }
+
+
+        private bool CreateProduct(CreateProduct model, IProduct item)
+        {
+            try
+            {
+                int currentProductId = _dataManager.Products.AddProduct(item);
+                if (currentProductId == -1) return false;
+                if (_dataManager.ProductsCustomers.AddProdCustRelation(
+                    (int)Session["UserId"], currentProductId, model.Count))
+                    return true;
+                bool result = _dataManager.Products.DeleteProduct(item.Id);
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+        private bool UpdateProduct(IProduct item, CreateProduct model)
+        {
+            try
+            {
+                int currentProductId = _dataManager.Products.UpdateProduct(item);
+                if (currentProductId == -1) return false;
+                if (_dataManager.ProductsCustomers.UpdateProdCastRelation(
+                    (int) Session["UserId"], currentProductId, model.Count))
+                    return true;
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        private bool DeleteProduct(CreateProduct model)
+        {
+            // if the product was bought, it mustn't be deleted from Products
+            // but must be deleted from CustomersProducts
+            return _dataManager.Products.DeleteProduct(model.Id);
+        }
+        private void ReadModel(CreateProduct model, IProduct item)
+        {
+            item.Name = model.Name;
+            item.Image = model.Image;
+            item.Description = model.Description;
+            item.Cost = model.Cost;
+            item.IsAvailable = model.IsAvailable;
+        }
+        private void ReadImage(CreateProduct model, HttpPostedFileBase uploadImage)
+        {
+            // считываем переданный файл в массив байтов
+            byte[] imageData;
+            using (var binaryReader = new BinaryReader(uploadImage.InputStream))
+                imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
+            // установка массива байтов
+            model.Image = imageData;
+        }
+        private void ReadImage(IProduct item, HttpPostedFileBase uploadImage)
+        {
+            // считываем переданный файл в массив байтов
+            byte[] imageData;
+            using (var binaryReader = new BinaryReader(uploadImage.InputStream))
+                imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
+            // установка массива байтов
+            item.Image = imageData;
+        }
+        private ActionResult Redirect(bool answer)
+        {
+            int result;
+            if (answer)
+                result = (int)Result.OperationSuccess;
+            else
+                result = (int)Result.Error;
+
+            return RedirectToAction("Finality", new { id = result });
+        }
 
         private readonly DataManager _dataManager;
         private int _currentCustomerId;
