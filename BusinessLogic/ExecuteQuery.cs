@@ -82,11 +82,12 @@ namespace BusinessLogic
                     command.CommandText = query;
                     SqlDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
                     List<IProduct> products = null;
-                    if (reader.Read())
+                    while (reader.Read())
                     {
                         if (products == null) products = new List<IProduct>();
                         IProduct product = new Product
                             {
+                                Id = reader.GetInt32(0),
                                 Name = reader.GetString(1),
                                 IsAvailable = (bool)reader.GetValue(2),
                                 Cost = (decimal) reader.GetValue(3)
@@ -159,7 +160,7 @@ namespace BusinessLogic
             }
         }
 
-        public static bool AddProduct(DbDataContext context, string query, params Object[] parameters)
+        public static bool ChangeProduct(DbDataContext context, string query, params Object[] parameters)
         {
             using (var connection = new SqlConnection(context.ConnectionString))
             {
@@ -167,7 +168,8 @@ namespace BusinessLogic
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = query;
-                    command.Parameters.Add("@binaryValue", SqlDbType.VarBinary, 8000).Value = (byte[])parameters[0];
+                    if (parameters.Length != 0)
+                        command.Parameters.Add("@binaryValue", SqlDbType.Image).Value = (byte[])parameters[0];
                     
                     if (command.ExecuteNonQuery() == -1)
                         return false;
@@ -176,5 +178,8 @@ namespace BusinessLogic
                 }
             }
         }
+
+        
+        
     }
 }
