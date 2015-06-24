@@ -11,5 +11,9 @@ namespace BusinessLogic.Repositories.Interfaces
         IEnumerable<IProduct> GetAvailableProducts();
 
         bool AddProduct(IProduct product);
+
+        bool UpdateProduct(IProduct item);
+
+        bool DeleteProduct(int id);
     }
 }
