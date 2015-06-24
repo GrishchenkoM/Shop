@@ -148,3 +148,22 @@ h3.ico4 { background-image:url(images/ico4.gif);}
 
 .links-content a { color:#00008b; text-decoration: underline; cursor:pointer; }
 .links-content a:hover { color:#0000ff; text-decoration: none; }
+
+.items {width: 800px;
+  height: 250px;
+  border: 20px;
+  border-color: black;
+  margin: 10px;
+  font-size: 1.2em;
+  }
+  fieldset { background-color: aliceblue;}
+  .items a { color:#00008b; text-decoration: underline; cursor:pointer;}
+  .items a:hover { color:#0000ff; text-decoration: none; }
+  
+  #product-image {float: left;padding-right: 20px;}
+  #product-name { font-size: 1.5em;padding-left: 20px;}
+  #product-cost{color: #8b0000;}
+  #product-description{color: #8b0000;}
+  #product-available a{ color: green;font-style: oblique;}
+  #product-available b{ color: #8b0000;font-style: oblique;}
+  .items ul p{ color: #7b7b7b;font-size: 1.2em;font-style: oblique;padding-bottom: 5px;}

@@ -52,3 +52,15 @@ textarea
 .input-validation-error{border: 1px solid #ff0000;background-color: #ffeeee;}
 .validation-summary-errors{font-weight: bold;color: #ff0000;}
 .validation-summary-valid{display: none;}
+
+
+#items {width: 500px;
+  height: 150px;
+  border: 30px;
+  border-color: black;
+  margin: 5px;
+  list-style: none;
+  font-size: 1.2em;
+  }
+  #items a { color:#00008b; text-decoration: underline; cursor:pointer; }
+  #items a:hover { color:#0000ff; text-decoration: none; }
