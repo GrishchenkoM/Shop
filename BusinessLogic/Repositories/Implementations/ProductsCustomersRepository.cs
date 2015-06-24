@@ -34,6 +34,30 @@ namespace BusinessLogic.Repositories.Implementations
             throw new NotImplementedException();
         }
 
+        public bool AddProdCustRelation(int userId, int currentProductId, int count)
+        {
+            string query = "INSERT INTO ProductsCustomers " +
+                           "(CustomerId, ProductId, Count) " +
+                           "VALUES ({0}, {1}, {2})";
+            query = string.Format(query, userId, currentProductId, count);
+
+            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+                return false;
+            return true;
+        }
+
+        public bool UpdateProdCastRelation(int userId, int currentProductId, int count)
+        {
+            string query = "UPDATE ProductsCustomers " +
+                           "SET Count = {0} WHERE ProductId = {1} AND CustomerId = {2}";
+            query = string.Format(query, count, currentProductId, userId);
+
+            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+                return false;
+            return true;
+        }
+
+
         private readonly DbDataContext _context;
     }
 }

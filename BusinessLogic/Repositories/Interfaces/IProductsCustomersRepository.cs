@@ -9,5 +9,9 @@ namespace BusinessLogic.Repositories.Interfaces
         ICustomer GetCustomerByProduct(int productId);
         IEnumerable<IProduct> GetProductsByCustomer(int customerId);
         IEnumerable<IProductsCustomers> GetProductsCustomers();
+
+        bool AddProdCustRelation(int userId, int currentProductId, int count);
+
+        bool UpdateProdCastRelation(int userId, int currentProductId, int count);
     }
 }
