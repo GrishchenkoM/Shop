@@ -5,6 +5,8 @@ namespace Web.Models
 {
     public class CreateProduct
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Введите название товара")]
         public string Name { get; set; }
 
@@ -14,7 +16,7 @@ namespace Web.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Введите стоимость товара")]
-        [RegularExpression(@"([0-9]+)", ErrorMessage = "Введите только число")]
+        //[RegularExpression(@"(([0-9]+))[,.]([0-9]*)", ErrorMessage = "Введите число. Маска: '999.99'")]
         public decimal Cost { get; set; }
 
         [Required(ErrorMessage = "Введите количество товара")]
