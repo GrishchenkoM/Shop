@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
@@ -132,7 +133,7 @@ namespace BusinessLogic
             }
         }
 
-        public static ICustomer GetProductsCustomers(DbDataContext context, string query)
+        public static IEnumerable<IProductsCustomers> GetProductsCustomers(DbDataContext context, string query)
         {
             using (var connection = new SqlConnection(context.ConnectionString))
             {
@@ -141,22 +142,16 @@ namespace BusinessLogic
                 {
                     command.CommandText = query;
                     SqlDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
-                    ICustomer customer = null;
-                    if (reader.Read())
+                    var productsCustomersList = new List<IProductsCustomers>();
+                    while(reader.Read())
                     {
-                        customer = new Customer();
-                        customer.FirstName = reader.GetString(1);
-                        customer.LastName = reader.GetString(2);
-                        customer.UserName = reader.GetString(3);
-                        customer.Password = reader.GetString(4);
-                        customer.Email = reader.GetString(5);
-                        if (reader.GetValue(6) != DBNull.Value)
-                            customer.CreatedDate = (DateTime)reader.GetValue(6);
-                        customer.Addres = reader.GetValue(7) != DBNull.Value ? reader.GetString(7) : "";
-                        customer.Sex = reader.GetValue(8) != DBNull.Value ? reader.GetString(8) : "";
-                        customer.Phone = reader.GetValue(9) != DBNull.Value ? reader.GetString(9) : "";
+                        IProductsCustomers productsCustomers = new ProductsCustomers();
+                        productsCustomers.CustomerId = reader.GetInt32(1);
+                        productsCustomers.ProductId = reader.GetInt32(2);
+                        productsCustomers.Count = reader.GetInt32(3);
+                        productsCustomersList.Add(productsCustomers);
                     }
-                    return customer;
+                    return productsCustomersList;
                 }
             }
         }
@@ -178,11 +173,18 @@ namespace BusinessLogic
                     command.CommandText = query;
                     if (parameters.Length != 0)
                             command.Parameters.Add("@binaryValue", SqlDbType.Image).Value = 
-                                (byte[])parameters[0];
+                                parameters[0];
                     if (command.ExecuteNonQuery() == -1) return -1;
                     if (query.Contains("DELETE")) return 1;
                     command.CommandText = "SELECT @@IDENTITY";
-                    return Convert.ToInt32(command.ExecuteScalar());
+                    try
+                    {
+                        return Convert.ToInt32(command.ExecuteScalar());
+                    }
+                    catch (Exception)
+                    {
+                        return 1;
+                    }
                 }
             }
         }
