@@ -17,13 +17,11 @@ namespace BusinessLogic.Repositories.Implementations
         {
             throw new NotImplementedException();
         }
-
         public ICustomer GetCustomerByProduct(int productId)
         {
             string query = "";
             return ExecuteQuery.GetCustomer(_context, query);
         }
-
         public IEnumerable<IProduct> GetProductsByCustomer(int customerId)
         {
             throw new NotImplementedException();
@@ -31,7 +29,9 @@ namespace BusinessLogic.Repositories.Implementations
 
         public IEnumerable<IProductsCustomers> GetProductsCustomers()
         {
-            throw new NotImplementedException();
+            const string query = "SELECT * FROM ProductsCustomers";
+
+            return ExecuteQuery.GetProductsCustomers(_context, query);
         }
 
         public bool AddProdCustRelation(int userId, int currentProductId, int count)
