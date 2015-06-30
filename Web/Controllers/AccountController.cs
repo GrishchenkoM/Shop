@@ -32,8 +32,10 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult LogIn()
+        public ActionResult LogIn(int id = -1)
         {
+            if (id != -1)
+                Session.Add("CurrentProductId", id);
             return View();
         }
         [HttpPost]
@@ -49,6 +51,11 @@ namespace Web.Controllers
                     if (customer != null)
                         tempId = customer.Id;
                     FormsAuthentication.SetAuthCookie(model.UserName, false);
+
+                    Session["UserId"] = tempId;
+                    
+                    if (Session["CurrentProductId"] != null)
+                        return RedirectToAction("Index", "Purchase", new { id = (int)Session["CurrentProductId"] });
                     return RedirectToAction("Index", "Home", new { id = tempId});
                 }
                 ModelState.AddModelError("", "Неудачная попытка входа на сайт");
