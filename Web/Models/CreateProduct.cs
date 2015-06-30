@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Web;
 
 namespace Web.Models
 {
@@ -24,6 +23,7 @@ namespace Web.Models
         public int Count { get; set; }
 
         public bool IsAvailable { get; set; }
+        public bool IsMine { get; set; }
 
     }
 }
