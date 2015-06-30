@@ -1,23 +1,9 @@
 ﻿@using Web.Models
 @model CreateProduct
 
-<script>
-    function UploadImage() {
-        if (document.getElementById('image').value == "")
-            document.getElementById('image').style.cssText =
-                "color:red;font-weight:900; font-size:120%";
-        else {
-            document.getElementById('image').style.cssText =
-                "color:black;font-weight:100; font-size:100%";
-        }
-    }
-
-    
-</script>
-
 @section Context{
     <div class="box-content">
-        @using (Html.BeginForm("Create", "Home",
+        @using (Html.BeginForm("Index", "Edit",
             FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <fieldset>
@@ -38,7 +24,8 @@
                     <td>Фото:</td>
                     <td>
                         <p><input accept="image/*" id="image" name="uploadImage" type="file" /></p>
-                        <script>UploadImage()</script>
+                        @*<script>UploadImage()</script>*@
+                        <p>@Html.LabelFor(x => x.Image)</p>
                     </td>
                     <td>
                         <div id="imagePosition">
@@ -74,14 +61,19 @@
                 </tr>
                 <tr>
                     <td>Есть в наличии</td>
-                    <td>@Html.CheckBoxFor(x=>x.IsAvailable)</td>
+                    <td>@Html.CheckBoxFor(x => x.IsAvailable)</td>
                 </tr>
             </table>
             </fieldset>
             <br/>
-            <div>
-                <input type="submit" value="Сохранить" onclick="UploadImage()"/>
-            </div>
+            <span>
+                <div>
+                    <input type="submit" value="Сохранить" name="save"/>
+                </div>
+                <div>
+                    <input type="submit" value="Удалить" name="delete"/>
+                </div>
+            </span>
         }
     </div>
 }
@@ -93,5 +85,6 @@
 }
 @section EditOrBuy
 {
-    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
 }
+

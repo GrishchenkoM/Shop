@@ -1,5 +1,6 @@
 ﻿@using Domain.Entities
-@model Domain.Entities.Interfaces.ICustomer
+@using Domain.Entities.Interfaces
+@model Web.Models.HomeViewModel
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,15 +14,17 @@
 
 
 @section LoginOrRegister{
-<div>
-    @Html.ActionLink("Выйти", "LogOut", "Account")
-</div>
-
+@(Model.CustomerId == -1 
+? Html.ActionLink("Войти", "LogIn", "Account")
+: Html.ActionLink("Выйти", "LogOut", "Account"))
 }
 
 @section EditOrBuy
 {
-    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+    @if (Model.CustomerId != -1)
+    {
+        @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
 }
 
 @section Context{
@@ -35,12 +38,28 @@
 			@* Content Slider *@
 			<div id="slider" class="box">
 				<div id="slider-holder">
-					<ul>
-					    <li><a href="#"><img src="css/images/slide1.jpg" alt="" /></a></li>
-					    <li><a href="#"><img src="css/images/slide1.jpg" alt="" /></a></li>
-					    <li><a href="#"><img src="css/images/slide1.jpg" alt="" /></a></li>
-					    <li><a href="#"><img src="css/images/slide1.jpg" alt="" /></a></li>
-					</ul>
+				    <ul>
+				        @if (Model != null && Model.PopularProducts != null)
+			        {
+                        for (int i = 0; i < ((Model.PopularProducts.Count > 5) ? 5 : Model.Products.Count); ++i)
+			             {
+			                 <li>
+			                     <p>@Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+			                                  + Convert.ToBase64String(Model.PopularProducts[i].Image) + "\" />")</p>
+			                     <div>
+			                         <p>@Html.ActionLink(Model.PopularProducts[i].Name.Substring(0,
+                                                                                             (Model.PopularProducts[i].Name.Length - 1 < 20)
+                                                                                                 ? Model.PopularProducts[i].Name.Length - 1 : 20),
+                                                            "Index", "Purchase", new { id = Model.PopularProducts[i].Id }, null)
+			                         </p>
+			                     </div>
+			                     
+			                 </li>
+			             }
+			        }
+
+				        
+				    </ul>
 				</div>
 				<div id="slider-nav">
 					<a href="#" class="active">1</a>
@@ -54,41 +73,31 @@
 			@* Products *@
 			<div class="products">
 				<div class="cl">&nbsp;</div>
-				<ul>
-				    <li>
-				    	<a href="#"><img src="css/images/big1.jpg" alt="" /></a>
-				    	<div class="product-info">
-				    		<h3>LOREM IPSUM</h3>
-				    		<div class="product-desc">
-								<h4>WOMEN’S</h4>
-				    			<p>Lorem ipsum dolor sit<br />amet</p>
-				    			<strong class="price">$58.99</strong>
-				    		</div>
-				    	</div>
-			    	</li>
-			    	<li>
-				    	<a href="#"><img src="css/images/big1.jpg" alt="" /></a>
-				    	<div class="product-info">
-				    		<h3>LOREM IPSUM</h3>
-				    		<div class="product-desc">
-								<h4>WOMEN’S</h4>
-				    			<p>Lorem ipsum dolor sit<br />amet</p>
-				    			<strong class="price">$58.99</strong>
-				    		</div>
-				    	</div>
-			    	</li>
-			    	<li class="last">
-				    	<a href="#"><img src="css/images/big1.jpg" alt="" /></a>
-				    	<div class="product-info">
-				    		<h3>LOREM IPSUM</h3>
-				    		<div class="product-desc">
-								<h4>WOMEN’S</h4>
-				    			<p>Lorem ipsum dolor sit<br />amet</p>
-				    			<strong class="price">$58.99</strong>
-				    		</div>
-				    	</div>
-			    	</li>
-				</ul>
+			    <ul>
+			        @if (Model != null && Model.Products != null)
+			        {
+                        for (int i = 0; i < ((Model.Products.Count > 3) ? 3 : Model.Products.Count); ++i)
+			             {
+			                 <li>
+			                     <p>@Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                      + Convert.ToBase64String(Model.Products[i].Image) + "\" />")</p>
+			                     <div class="product-info">
+			                         <h3>НОВИНКА !!!</h3>
+			                         <div class="product-desc">
+			                             @*<p>@Html.ActionLink(Model.Products[i].Name.Substring(0,(Model.Products[i].Name.Length - 1 < 20)? (Model.Products[i].Name.Length - 1) : 20),"Index","Purchase", new { id = Model.Products[i].Id })
+			                             </p>*@
+                                         <p>@Html.ActionLink(Model.Products[i].Name, "Index", "Purchase", new { id = Model.Products[i].Id }, null);
+			                             </p>
+			                             <h4>@Model.Products[i].Description.Substring(0,
+                                (Model.Products[i].Description.Length - 1 < 18)
+                                ? Model.Products[i].Description.Length - 1 : 18)</h4>
+			                             <strong class="price">$@Model.Products[i].Cost</strong>
+			                         </div>
+			                     </div>
+			                 </li>
+			             }
+			        }
+			    </ul>
 				<div class="cl">&nbsp;</div>
 			</div>
 			@* End Products *@
@@ -104,19 +113,19 @@
 				<h2>Search by <span></span></h2>
 			    <div class="box-content">
 			        @using (Html.BeginForm())
-			        {
+           {
 			            <label>Ключевое слово</label>
 			            <p>@Html.TextBox("keyword")</p>
 				        
-			            @*<input type="submit" class="search-submit" value="Search" />*@
+			            <input type="submit" class="search-submit" value="Search" />
 
-			            <p>
+			            @*<p>
 			                <a href="#" class="bul">Advanced search</a><br />
 			                <a href="#" class="bul">Contact Customer Support</a>
-			            </p>
-			        }
+			            </p>*@
+           }
 			    </div>
-                @if (Model != null )
+                @if (Model != null && ViewBag != null && ViewBag is Product)
                 {
                     <p>Результат поиска:</p>
                     foreach (Product product in ViewBag)
@@ -126,29 +135,6 @@
                 }
 			</div>
 			@* End Search *@
-			
-			@* Categories *@
-			<div class="box categories">
-				<h2>Categories <span></span></h2>
-				<div class="box-content">
-					<ul>
-					    <li><a href="#">Category 1</a></li>
-					    <li><a href="#">Category 2</a></li>
-					    <li><a href="#">Category 3</a></li>
-					    <li><a href="#">Category 4</a></li>
-					    <li><a href="#">Category 5</a></li>
-					    <li><a href="#">Category 6</a></li>
-					    <li><a href="#">Category 7</a></li>
-					    <li><a href="#">Category 8</a></li>
-					    <li><a href="#">Category 9</a></li>
-					    <li><a href="#">Category 10</a></li>
-					    <li><a href="#">Category 11</a></li>
-					    <li><a href="#">Category 12</a></li>
-					    <li class="last"><a href="#">Category 13</a></li>
-					</ul>
-				</div>
-			</div>
-			@* End Categories *@
 			
 		</div>
 		@* End Sidebar *@
@@ -163,29 +149,28 @@
 		@* More Products *@
 		<div class="more-products">
 			<div class="more-products-holder">
-				<ul>
-				    <li><a href="#"><img src="css/images/small1.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small2.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small3.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small4.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small5.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small6.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small7.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small1.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small2.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small3.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small4.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small5.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small6.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small7.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small1.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small2.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small3.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small4.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small5.jpg" alt="" /></a></li>
-				    <li><a href="#"><img src="css/images/small6.jpg" alt="" /></a></li>
-				    <li class="last"><a href="#"><img src="css/images/small7.jpg" alt="" /></a></li>
-				</ul>
+			    <ul>
+			        @if (Model != null && Model.Products != null)
+			        {
+			            foreach (IProduct product in Model.Products)
+			            {
+			                <li>
+			                    <p>@Html.Raw("<img style='width:70px; height:70px;' src=\"data:image/jpeg;base64,"
+			                                 + Convert.ToBase64String(product.Image) + "\" />")</p>
+			                    <div>
+			                        <p>@Html.ActionLink(product.Name.Substring(0,
+			                                                                   (product.Name.Length - 1 < 20)
+			                                                                       ? product.Name.Length - 1 : 20),
+                                                          "Index", "Purchase", new { id = product.Id }, null)
+			                        </p>
+			                    </div>
+			                     
+			                </li>
+			            }
+			        }
+				    
+			        
+			    </ul>
 			</div>
 			<div class="more-nav">
 				<a href="#" class="prev">previous</a>

@@ -1,40 +1,26 @@
-﻿@using Domain.Entities.Interfaces
-@model IEnumerable<IProduct>
+﻿@using Web.Models
+@model CreateProduct
 
 @section Context{
     <div class="box-content">
-        <div>
-            @using (Html.BeginForm())
-            {
-                <p>
-                    Найти товар:
-                </p>
-                <p>@Html.TextBox("name")</p>
-                <p>
-                    <input type="submit" value="Найти товар"/>
-                </p>
-            }
-        </div>
         <div style="clear: both; height: 10px"></div>
         <div class="box">
             @if (Model != null)
             {
                 <div class="box-content">
-                    <p>Результаты поиска:</p>
-                    @foreach (IProduct product in Model)
-                    {
+                    @using (Html.BeginForm()){
                         <fieldset>
                             <div class="items">
                                 <div id="product-name">
-                                    <p>@Html.ActionLink(product.Name,"Edit", "Home", new { id = product.Id},null)</p>
+                                    <p>@Html.ActionLink(Model.Name, "Index", "Edit", new {id = Model.Id}, null)</p>
                                 </div>
                                 <div style="clear: both; height: 20px"></div>
                                 <ul>
                                     <div id="product-image">
-                                        @if (product.Image != null)
+                                        @if (Model.Image != null)
                                         {
                                             @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
-                                                      + Convert.ToBase64String(product.Image) + "\" />")
+                                                           + Convert.ToBase64String(Model.Image) + "\" />")
                                         }
                                         else
                                         {
@@ -42,10 +28,10 @@
                                         }
                                     </div>
                                     <div id="product-name">
-                                        @product.Cost
+                                        @Model.Cost
                                     </div>
                                     <div id="product-available">
-                                        @if (product.IsAvailable)
+                                        @if (Model.IsAvailable)
                                         {
                                             <a>В наличии</a>
                                         }
@@ -57,13 +43,25 @@
                                     <div style="height: 10px"></div>
                                     <div>
                                         <p>Описание:</p>
-                                        @product.Description
+                                        @Model.Description
                                     </div>
+                                    @if (Model != null && Model.IsMine == true)
+                                    {
+                                        <div style="font-size:inherit; color:red; font-style: oblique;">
+                                            Товар пренадлежит мне!!!
+                                        </div>
+                                    }
                                 </ul>
+                                <div>
+                                    <p>Количество:</p>
+                                    <p>@Html.TextBoxFor(x=>x.Count)</p>
+                                </div>
                             </div>
                         </fieldset>
-                        <br/>
+                        <span><input type="submit" value="Купить" name="save" style="color: green;"/></span>
                     }
+                    <br/>
+                    
                 </div>
             }
         </div>
@@ -77,5 +75,5 @@
 }
 @section EditOrBuy
 {
-    @Html.ActionLink("Редактировать", "EditMenu", "Home")
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
 }

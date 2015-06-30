@@ -1,0 +1,81 @@
+﻿@using Domain.Entities.Interfaces
+@model IEnumerable<IProduct>
+
+@section Context{
+    <div class="box-content">
+        <div>
+            @using (Html.BeginForm())
+            {
+                <p>
+                    Найти товар:
+                </p>
+                <p>@Html.TextBox("name")</p>
+                <p>
+                    <input type="submit" value="Найти товар"/>
+                </p>
+            }
+        </div>
+        <div style="clear: both; height: 10px"></div>
+        <div class="box">
+            @if (Model != null)
+            {
+                <div class="box-content">
+                    <p>Результаты поиска:</p>
+                    @foreach (IProduct product in Model)
+                    {
+                        <fieldset>
+                            <div class="items">
+                                <div id="product-name">
+                                    <p>@Html.ActionLink(product.Name,"Index", "Edit", new { id = product.Id},null)</p>
+                                </div>
+                                <div style="clear: both; height: 20px"></div>
+                                <ul>
+                                    <div id="product-image">
+                                        @if (product.Image != null)
+                                        {
+                                            @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+                                                      + Convert.ToBase64String(product.Image) + "\" />")
+                                        }
+                                        else
+                                        {
+                                            @Html.Label("Фото отсутствует")
+                                        }
+                                    </div>
+                                    <div id="product-name">
+                                        @product.Cost
+                                    </div>
+                                    <div id="product-available">
+                                        @if (product.IsAvailable)
+                                        {
+                                            <a>В наличии</a>
+                                        }
+                                        else
+                                        {
+                                            <b>Нет на складе</b>
+                                        }
+                                    </div>
+                                    <div style="height: 10px"></div>
+                                    <div>
+                                        <p>Описание:</p>
+                                        @product.Description
+                                    </div>
+                                </ul>
+                            </div>
+                        </fieldset>
+                        <br/>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div style="clear: both; height: 10px"></div>
+}
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+}
