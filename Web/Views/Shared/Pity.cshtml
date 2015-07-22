@@ -1,0 +1,34 @@
+﻿@model HandleErrorInfo
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+}
+
+@section Context
+{
+<div class="box-content">
+<fieldset>
+    <div class=edit>
+        <br/>
+        <p>К большому сожалению, произошла непредвиденная ошибка.</p>
+        <br/>
+        <br/>
+        <div>
+            Ошибка произошла в результате обращения к действию @Model.ActionName
+        </div>
+        <div>
+            Тип ошибки: @Model.Exception.Message
+        </div>
+        <br/>
+        <br/>
+        <p>Перейти на @Html.ActionLink("Главную", "Index", "Home")</p>
+    </div>
+</fieldset>
+</div>
+
+}
