@@ -31,5 +31,10 @@ namespace Web.Models
 
         [Required(ErrorMessage = "Введите фамилию")]
         public string LastName { get; set; }
+
+        public string Address { get; set; }
+        public string Sex { get; set; }
+        [RegularExpression(@"([0-9-+]{0,25})", ErrorMessage = "Неверный формат")]
+        public string Phone { get; set; }
     }
 }
