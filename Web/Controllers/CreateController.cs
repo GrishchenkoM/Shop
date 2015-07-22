@@ -9,6 +9,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
+    [Authorize, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class CreateController : Controller
     {
         public CreateController(DataManager manager)
