@@ -4,19 +4,25 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ajax = new AjaxOptions
+        {
+            UpdateTargetId = "foundList",
+            Url = Url.Action("GetFoundProducts"),
+            LoadingElementId = "loadingElement"
+        };
 }
-
-@*<p>Get Customer By Id # @ViewBag.CustomerId :</p>
-<p>
-    
-</p>
-*@
 
 
 @section LoginOrRegister{
-@(Model.CustomerId == -1 
-? Html.ActionLink("Войти", "LogIn", "Account")
-: Html.ActionLink("Выйти", "LogOut", "Account"))
+    @if (Model.CustomerId == -1)
+    {
+        @Html.ActionLink("Войти", "LogIn", "Account")
+        @Html.ActionLink("Зарегистрироваться", "Register", "Account")
+    }
+    else
+    {
+        @Html.ActionLink("Выйти", "LogOut", "Account")
+    }
 }
 
 @section EditOrBuy
@@ -28,184 +34,430 @@
 }
 
 @section Context{
+
+    <script type="text/javascript">
+        
+        $("a[href='#top']").click(function() {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
+        });
+        
+    </script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+
     @* Main *@
-	<div id="main">
-		<div class="cl">&nbsp;</div>
+    <div id="main">
+        <div class="cl">&nbsp;</div>
 		
-		@* Content *@
-		<div id="content">
+        @* Content *@
+        <div id="content">
 			
-			@* Content Slider *@
-			<div id="slider" class="box">
-				<div id="slider-holder">
-				    <ul>
-				        @if (Model != null && Model.PopularProducts != null)
-			        {
-                        for (int i = 0; i < ((Model.PopularProducts.Count > 5) ? 5 : Model.Products.Count); ++i)
-			             {
-			                 <li>
-			                     <p>@Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
-			                                  + Convert.ToBase64String(Model.PopularProducts[i].Image) + "\" />")</p>
-			                     <div>
-			                         <p>@Html.ActionLink(Model.PopularProducts[i].Name.Substring(0,
-                                                                                             (Model.PopularProducts[i].Name.Length - 1 < 20)
-                                                                                                 ? Model.PopularProducts[i].Name.Length - 1 : 20),
-                                                            "Index", "Purchase", new { id = Model.PopularProducts[i].Id }, null)
-			                         </p>
-			                     </div>
-			                     
-			                 </li>
-			             }
-			        }
-
-				        
-				    </ul>
-				</div>
-				<div id="slider-nav">
-					<a href="#" class="active">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-				</div>
-			</div>
-			@* End Content Slider *@
-			
-			@* Products *@
-			<div class="products">
-				<div class="cl">&nbsp;</div>
-			    <ul>
-			        @if (Model != null && Model.Products != null)
-			        {
-                        for (int i = 0; i < ((Model.Products.Count > 3) ? 3 : Model.Products.Count); ++i)
-			             {
-			                 <li>
-			                     <p>@Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
-                                      + Convert.ToBase64String(Model.Products[i].Image) + "\" />")</p>
-			                     <div class="product-info">
-			                         <h3>НОВИНКА !!!</h3>
-			                         <div class="product-desc">
-			                             @*<p>@Html.ActionLink(Model.Products[i].Name.Substring(0,(Model.Products[i].Name.Length - 1 < 20)? (Model.Products[i].Name.Length - 1) : 20),"Index","Purchase", new { id = Model.Products[i].Id })
-			                             </p>*@
-                                         <p>@Html.ActionLink(Model.Products[i].Name, "Index", "Purchase", new { id = Model.Products[i].Id }, null);
-			                             </p>
-			                             <h4>@Model.Products[i].Description.Substring(0,
-                                (Model.Products[i].Description.Length - 1 < 18)
-                                ? Model.Products[i].Description.Length - 1 : 18)</h4>
-			                             <strong class="price">$@Model.Products[i].Cost</strong>
-			                         </div>
-			                     </div>
-			                 </li>
-			             }
-			        }
-			    </ul>
-				<div class="cl">&nbsp;</div>
-			</div>
-			@* End Products *@
-			
-		</div>
-		@* End Content *@
-		
-		@* Sidebar *@
-		<div id="sidebar">
-			
-			@* Search *@
-			<div class="box search">
-				<h2>Search by <span></span></h2>
-			    <div class="box-content">
-			        @using (Html.BeginForm())
-           {
-			            <label>Ключевое слово</label>
-			            <p>@Html.TextBox("keyword")</p>
-				        
-			            <input type="submit" class="search-submit" value="Search" />
-
-			            @*<p>
-			                <a href="#" class="bul">Advanced search</a><br />
-			                <a href="#" class="bul">Contact Customer Support</a>
-			            </p>*@
-           }
-			    </div>
-                @if (Model != null && ViewBag != null && ViewBag is Product)
-                {
-                    <p>Результат поиска:</p>
-                    foreach (Product product in ViewBag)
+            @* Content Slider *@
+            <div id="slider" class="box">
+                <div id="slider-holder">
+                    
+                    <ul>
+                        @if (Model != null && Model.Products != null)
+                        {
+                            for (int i = 0; i < ((Model.Products.Count > 5) ? 5 : Model.Products.Count); ++i)
+                            {
+                                <li>
+                                    <table id="slider">
+                                        <tr>
+                                            <td>
+                                                <a href="/Purchase/Index/@Model.Products[i].Id">
+                                                    @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+                                                              + Convert.ToBase64String(Model.Products[i].Image) + "\" />")</a>
+                                            </td>
+                                            <td id="col2">
+                                                <h1>@Html.ActionLink(Model.Products[i].Name,
+                                                                     "Index", "Purchase", new {id = Model.Products[i].Id}, null)
+                                                </h1>
+                                                <br/>
+                                                <div class="product-info" style="position: inherit;">
+                                                    <h3>НОВИНКА !!!</h3>
+                                                </div>
+                                                <br/>
+                                                <div class="price">
+                                                    @Model.Products[i].Cost.ToString("### ###,## грн'.'")
+                                                </div>
+                                                <h3>
+                                                    @Model.Products[i].Description
+                                                </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p>
+                                                    @if (Model.Products[i].IsAvailable)
+                                                    {
+                                                        <div class="instock">
+                                                            <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                            Есть в наличии
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong>Нет на складе</strong>
+                                                    }
+                                                </p>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    
+                </div>
+                <div id="slider-nav">
+                    <a href="#" class="active">1</a>
+                    @if (Model != null && Model.Products != null)
                     {
-                        <div>@Html.Label(product.Name + " " + product.Cost)</div>
+                        for (int i = 0; i < ((Model.Products.Count > 4) ? 4 : Model.Products.Count); ++i)
+                        {
+                            <a href="#">i + 1</a>
+                        }
                     }
-                }
-			</div>
-			@* End Search *@
+                </div>
+            </div>
+            @* End Content Slider *@
 			
-		</div>
-		@* End Sidebar *@
+            @* Products *@
+            <div class="products">
+                
+                <div class="cl">&nbsp;</div>
+                <ul>
+                    @if (Model != null && Model.PopularProducts != null)
+                    {
+                        for (int i = 0; i < ((Model.PopularProducts.Count > 2) ? 2 : Model.PopularProducts.Count); ++i)
+                        {
+                            <li class="first">
+                                <p><a href="/Purchase/Index/@Model.PopularProducts[i].Id">
+                                       @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                                 + Convert.ToBase64String(Model.PopularProducts[i].Image) + "\" />")</a>
+                                </p>
+                                <div class="product-info">
+                                    @if (i == 0)
+                                    {
+                                        <h3> САМЫЙ ПОПУЛЯРНЫЙ! </h3>
+                                    }
+                                    else
+                                    {
+                                        <h3> ОЧЕНЬ ПОПУЛЯРНЫЙ! </h3>
+                                    }
+                                    <div class="product-desc">
+                                        <p>
+                                            @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new {id = Model.PopularProducts[i].Id}, null)
+                                        </p>
+                                        @if (Model.PopularProducts[i].IsAvailable)
+                                        {
+                                            <div class="instock">
+                                                <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                Есть в наличии
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <strong>Нет на складе</strong>
+                                        }
+                                        <br/>
+                                        <h4>@Model.PopularProducts[i].Description.Substring(0,
+                                                                                            (Model.PopularProducts[i].Description.Length - 1 < 18)
+                                                                                                ? Model.PopularProducts[i].Description.Length - 1 : 18)</h4>
+                                        <strong class="price">@Model.PopularProducts[i].Cost.ToString("### ###,## грн'.'")</strong>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        if (Model.PopularProducts.Count > 2)
+                        {
+                            <li class="last">
+                                <p><a href="/Purchase/Index/@Model.PopularProducts[2].Id">
+                                       @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                                 + Convert.ToBase64String(Model.PopularProducts[2].Image) + "\" />")</a>
+                                </p>
+                                <div class="product-info">
+                                    <h3>ПОПУЛЯРНЫЙ!</h3>
+                                    <div class="product-desc">
+                                        <p>@Html.ActionLink(Model.PopularProducts[2].Name, "Index", "Purchase", new {id = Model.PopularProducts[2].Id}, null)
+                                        </p>
+                                        @if (Model.PopularProducts[2].IsAvailable)
+                                        {
+                                            <div class="instock">
+                                                <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                Есть в наличии
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <strong>Нет на складе</strong>
+                                        }
+                                        <br/>
+                                        <h4>@Model.PopularProducts[2].Description.Substring(0,
+                                                                                            (Model.PopularProducts[2].Description.Length - 1 < 18)
+                                                                                                ? Model.PopularProducts[2].Description.Length - 1 : 18)</h4>
+                                        <strong class="price">@Model.PopularProducts[2].Cost.ToString("### ###,## грн'.'")</strong>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+                <div class="cl">&nbsp;</div>
+                
+            </div>
+        </div>
+            
+        @* End Products *@
+			
+        
+        @* End Content *@
 		
-		<div class="cl">&nbsp;</div>
-	</div>
-	@* End Main *@
+        @* Sidebar *@
+        <div id="sidebar">
+			
+            @* Search *@
+            <div class="box search">
+                <h2>Найти по:<span></span></h2>
+                <div class="box-content">
+                    @using (Ajax.BeginForm(ajax))
+                    {
+                        <label>Ключевое слово</label>
+                        <p>@Html.TextBox("searchString")</p>
+                        <br/>
+                        <div class="search-button">
+                            <input type="submit"  value="Поиск" />
+                        </div>
+                        <br/>
+                        <div id="loadingElement" style="display: none; color: red; float: left">ЗАГРУЗКА...</div>
+                        <div id = "foundList">
+                            @Html.Action("GetFoundProducts", new {searchString = ViewBag.SearchString})
+                        </div>
+                    }
+                </div>
+
+            </div>
+            @* End Search *@
+			
+        </div>
+        @* End Sidebar *@
+		
+        <div class="cl">&nbsp;</div>
+    </div>
+    @* End Main *@
 	
+    <div >
+        @if (Model != null && Model.PopularProducts != null)
+        {
+            if (Model.PopularProducts.Count > 3)
+            {
+
+                <div id="buttons">
+                    <div id="long_button">
+                        <button style="width: 960px; height: 30px;"onclick=" slideToggleDiv('#all-products-list', '#all-products-list-button', 'Показать весь список', 'Скрыть список'); " id="all-products-list-button">Показать весь список</button>
+                    </div>
+                </div>
+
+                <div id="all-products-list" style="display: none;">              
+                    <div class="products_all">
+                        <ul>
+                            @{
+                                int count = Model.PopularProducts.Count;
+                                int currentIndex = 3;
+                                while (currentIndex != count)
+                                {
+                                    for (int i = 0; i < 3; ++i)
+                                    {
+                                        <li>
+                                            <p><a href="/Purchase/Index/@Model.PopularProducts[currentIndex].Id">
+                                                   @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                                             + Convert.ToBase64String(Model.PopularProducts[currentIndex].Image) + "\" />")</a>
+                                            </p>
+                                            <div class="product-info">
+                                                <div id="product-desc-other">
+                                                    <p>
+                                                        @Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new {id = Model.PopularProducts[currentIndex].Id}, null)
+                                                    </p>
+                                                    @if (Model.PopularProducts[currentIndex].IsAvailable)
+                                                    {
+                                                        <div class="instock">
+                                                            <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                            Есть в наличии
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong>Нет на складе</strong>
+                                                    }
+                                                    <br/>
+                                                    <h4>@Model.PopularProducts[currentIndex].Description.Substring(0,
+                                                                                                                   (Model.PopularProducts[currentIndex].Description.Length - 1 < 18)
+                                                                                                                       ? Model.PopularProducts[currentIndex].Description.Length - 1 : 18)</h4>
+                                                    <strong class="price">@Model.PopularProducts[currentIndex].Cost.ToString("### ###,## грн'.'")</strong>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        ++currentIndex;
+                                        if (currentIndex == count)
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    if (currentIndex == count)
+                                    {
+                                        break;
+                                    }
+
+                                    <li class="last">
+                                        <p><a href="/Purchase/Index/@Model.PopularProducts[currentIndex].Id">
+                                               @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                                         + Convert.ToBase64String(Model.PopularProducts[currentIndex].Image) + "\" />")</a>
+                                        </p>
+                                        <div class="product-info">
+                                            <div class="product-desc">
+                                                <p>@Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new {id = Model.PopularProducts[currentIndex].Id}, null);
+                                                </p>
+                                                @if (Model.PopularProducts[currentIndex].IsAvailable)
+                                                    {
+                                                        <div class="instock">
+                                                            <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                            Есть в наличии
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <strong>Нет на складе</strong>
+                                                    }
+                                                    <br/>
+                                                <h4>@Model.PopularProducts[currentIndex].Description.Substring(0,
+                                                                                                               (Model.PopularProducts[currentIndex].Description.Length - 1 < 28)
+                                                                                                                   ? Model.PopularProducts[currentIndex].Description.Length - 1 : 28)</h4>
+                                                <strong class="price">@Model.PopularProducts[currentIndex].Cost.ToString("### ###,## грн'.'")</strong>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    ++currentIndex;
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div id="all-products-list" style="display: none;">              
+                    <div class="products_all">
+                        <ul>
+                            @{
+                                for (int i = 0; i < Model.PopularProducts.Count; ++i)
+                                {
+                                    <li>
+                                        <p><a href="/Purchase/Index/@Model.PopularProducts[i].Id">
+                                               @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
+                                                         + Convert.ToBase64String(Model.PopularProducts[i].Image) + "\" />")</a>
+                                        </p>
+                                        <div class="product-info">
+                                            <div id="product-desc-other">
+                                                <p>
+                                                    @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new {id = Model.PopularProducts[i].Id}, null)
+                                                </p>
+                                                @if (Model.PopularProducts[i].IsAvailable)
+                                                {
+                                                    <div class="instock">
+                                                        <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                        Есть в наличии
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <strong>Нет на складе</strong>
+                                                }
+                                                <br/>
+                                                <h4>@Model.PopularProducts[i].Description.Substring(0,
+                                                                                                    (Model.PopularProducts[i].Description.Length - 1 < 28)
+                                                                                                        ? Model.PopularProducts[i].Description.Length - 1 : 28)</h4>
+                                                <strong class="price">@Model.PopularProducts[i].Cost.ToString("### ###,## грн'.'")</strong>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+
     @* Side Full *@
-	<div class="side-full">
+    <div class="side-full">
 		
-		@* More Products *@
-		<div class="more-products">
-			<div class="more-products-holder">
-			    <ul>
-			        @if (Model != null && Model.Products != null)
-			        {
-			            foreach (IProduct product in Model.Products)
-			            {
-			                <li>
-			                    <p>@Html.Raw("<img style='width:70px; height:70px;' src=\"data:image/jpeg;base64,"
-			                                 + Convert.ToBase64String(product.Image) + "\" />")</p>
-			                    <div>
-			                        <p>@Html.ActionLink(product.Name.Substring(0,
-			                                                                   (product.Name.Length - 1 < 20)
-			                                                                       ? product.Name.Length - 1 : 20),
-                                                          "Index", "Purchase", new { id = product.Id }, null)
-			                        </p>
-			                    </div>
+        @* More Products *@
+        <div class="more-products">
+            <div class="more-products-holder">
+                <ul>
+                    @if (Model != null && Model.Products != null)
+                    {
+                        foreach (IProduct product in Model.Products)
+                        {
+                            <li>
+                                <p><a href="/Purchase/Index/@product.Id">
+                                       @Html.Raw("<img style='width:70px; height:70px;' src=\"data:image/jpeg;base64,"
+                                                 + Convert.ToBase64String(product.Image) + "\" />")</a>
+                                </p>
+                                <div>
+                                    <p>@Html.ActionLink(product.Name.Substring(0,
+                                                                               (product.Name.Length - 1 < 20)
+                                                                                   ? product.Name.Length - 1 : 20),
+                                                        "Index", "Purchase", new {id = product.Id}, null)
+                                    </p>
+                                </div>
 			                     
-			                </li>
-			            }
-			        }
+                            </li>
+                        }
+                    }
 				    
 			        
-			    </ul>
-			</div>
-			<div class="more-nav">
-				<a href="#" class="prev">previous</a>
-				<a href="#" class="next">next</a>
-			</div>
-		</div>
-		@* End More Products *@
+                </ul>
+            </div>
+            <div class="more-nav">
+                <a href="#" class="prev">previous</a>
+                <a href="#" class="next">next</a>
+            </div>
+        </div>
+        @* End More Products *@
 		
-		@* Text Cols *@
-		<div class="cols">
-			<div class="cl">&nbsp;</div>
-			<div class="col">
-				<h3 class="ico ico1">Donec imperdiet</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet, metus ac cursus auctor, arcu felis ornare dui.</p>
-				<p class="more"><a href="#" class="bul">Lorem ipsum</a></p>
-			</div>
-			<div class="col">
-				<h3 class="ico ico2">Donec imperdiet</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet, metus ac cursus auctor, arcu felis ornare dui.</p>
-				<p class="more"><a href="#" class="bul">Lorem ipsum</a></p>
-			</div>
-			<div class="col">
-				<h3 class="ico ico3">Donec imperdiet</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet, metus ac cursus auctor, arcu felis ornare dui.</p>
-				<p class="more"><a href="#" class="bul">Lorem ipsum</a></p>
-			</div>
-			<div class="col col-last">
-				<h3 class="ico ico4">Donec imperdiet</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet, metus ac cursus auctor, arcu felis ornare dui.</p>
-				<p class="more"><a href="#" class="bul">Lorem ipsum</a></p>
-			</div>
-			<div class="cl">&nbsp;</div>
-		</div>
-		@* End Text Cols *@
+        @* Text Cols *@
+        <div class="cols">
+            <div class="cl">&nbsp;</div>
+            <div class="col">
+                <h3 class="ico ico1">Покупай! Продавай!</h3>
+                <p>Купить интересующий товар, либо продать свой.</p>
+                <p class="more">@Html.ActionLink("Подробнее...", "Index", "AboutSite")</p>
+            </div>
+            <div class="col">
+                <h3 class="ico ico2">Новинка!</h3>
+                <p>Вывод нового товара на экран.</p>
+                <p class="more">@Html.ActionLink("Подробнее...", "Index", "AboutSite")</p>
+            </div>
+            <div class="col">
+                <h3 class="ico ico3">Популярность!</h3>
+                <p>Вывод товара на экран по популярности.</p>
+                <p class="more">@Html.ActionLink("Подробнее...", "Index", "AboutSite")</p>
+            </div>
+            <div class="col col-last">
+                <h3 class="ico ico4">Больше возможностей!</h3>
+                <p>Идеи на будущее.</p>
+                <p class="more">@Html.ActionLink("Подробнее...", "Index", "AboutSite")</p>
+            </div>
+            <div class="cl">&nbsp;</div>
+        </div>
+        @* End Text Cols *@
 		
-	</div>
-	@* End Side Full *@
+    </div>
+    @* End Side Full *@
 }
