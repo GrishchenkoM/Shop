@@ -1,0 +1,122 @@
+﻿@model Web.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "";
+}
+<br/>
+<fieldset>
+    <h2 style="text-align: center; padding: 5px 0 5px 0">Мой профиль</h2>
+</fieldset>
+<br/>
+@section Context
+{
+    <div id="reg">
+        @using (Html.BeginForm())
+        {
+            <fieldset>
+            <div class="edit">
+                <p>
+                    @Html.ValidationSummary(true)
+                </p>
+            
+                <table id="table">
+                    <tr>
+                        <td>Логин:</td>
+                        <td>@Html.EditorFor(x => x.UserName)</td>
+                        <td id="reg_tabl_col3"></td>
+                    </tr>
+                    <tr>
+                        <td>Пароль:</td>
+                        <td>@Html.EditorFor(x => x.Password)</td>
+                        <td>@Html.ValidationMessageFor(x => x.Password)</td>
+                    </tr>
+                    <tr>
+                        <td>Пароль еще раз:</td>
+                        <td>@Html.EditorFor(x => x.ConfirmPassword)</td>
+                        <td>@Html.ValidationMessageFor(x => x.ConfirmPassword)</td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td>@Html.EditorFor(x => x.Email)</td>
+                        <td>@Html.ValidationMessageFor(x => x.ConfirmEmail)</td>
+                    </tr>
+                    <tr>
+                        <td>Email еще раз:</td>
+                        <td>@Html.TextBoxFor(x => x.ConfirmEmail)</td>
+                        <td>@Html.ValidationMessageFor(x => x.ConfirmEmail)</td>
+                    </tr>
+                    <tr>
+                        <td>Имя:</td>
+                        <td>@Html.TextBoxFor(x => x.FirstName)</td>
+                        <td>@Html.ValidationMessageFor(x => x.FirstName)</td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия:</td>
+                        <td>@Html.TextBoxFor(x => x.LastName)</td>
+                        <td>@Html.ValidationMessageFor(x => x.LastName)</td>
+                    </tr>
+                    <tr>
+                        <td>Пол:</td>
+                        <td>
+                            <p>
+                                @Html.RadioButtonFor(x => x.Sex, "Male")
+                                Мужчина
+                            </p>
+                            <p>
+                                @Html.RadioButtonFor(x => x.Sex, "Female")
+                                Женщина
+                            </p>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Телефон:</td>
+                        <td>@Html.TextBoxFor(x => x.Phone)</td>
+                        <td>@Html.ValidationMessageFor(x => x.Phone)</td>
+                    </tr>
+                    <tr>
+                        <td>Адрес:</td>
+                        <td>@Html.TextBoxFor(x => x.Address)</td>
+                        <td></td>
+                    </tr>
+                </table>
+            
+                <br/>
+                <div class="search-button">
+                    <p><input type="submit" value="Сохранить"/></p>
+                </div>
+            </div>
+            </fieldset>
+        }
+        
+        <br/>
+            @if (ViewBag.Message != null)
+            {
+                <fieldset style="font-size: 120%; color: red; border-color: red; padding: 5px;">
+                    @ViewBag.Message
+                </fieldset>
+            }
+        
+    </div>
+}
+
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @if (Session["Cart"] != null)
+    {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+    }
+    else
+    {
+            @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
+}
