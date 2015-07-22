@@ -54,7 +54,7 @@ namespace Domain
                         customer.LastName = dataReader.GetString(2);
                         customer.UserName = dataReader.GetString(3);
                         customer.Password = dataReader.GetString(4);
-                        customer.Addres = dataReader.GetString(5);
+                        customer.Address = dataReader.GetString(5);
                         customer.CreatedDate = (DateTime)dataReader.GetValue(6);
                         customer.Sex = dataReader.GetString(3); 
                         customer.Phone = dataReader.GetValue(4) != null ? dataReader.GetString(4) : "";

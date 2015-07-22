@@ -10,7 +10,7 @@ namespace Domain.Entities.Interfaces
         string UserName { get; set; }
         string Password { get; set; }
         DateTime CreatedDate { get; set; }
-        string Addres { get; set; }
+        string Address { get; set; }
         string Sex { get; set; }
         string Phone { get; set; }
         string Email { get; set; }
