@@ -1,16 +1,25 @@
-﻿@{
-    Layout = null;
+﻿
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>Pity</title>
-</head>
-<body>
-    <div>
-        
+@section Context
+{
+<div class="box-content">
+<fieldset>
+    <div class=edit>
+        <br/>
+        <p>К большому сожалению, произошла непредвиденная ошибка.</p>
+        <br/>
+        <p>Перейти на @Html.ActionLink("Главную", "Index", "Home")</p>
     </div>
-</body>
-</html>
+</fieldset>
+</div>
+
+}

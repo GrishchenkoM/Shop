@@ -2,7 +2,14 @@
 @model CreateProduct
 
 <script>
-    function UploadImage() {
+    function Update() {
+        UpdateImageName();
+        (function() {
+            
+        })();
+    }
+
+    function UpdateImageName() {
         if (document.getElementById('image').value == "")
             document.getElementById('image').style.cssText =
                 "color:red;font-weight:900; font-size:120%";
@@ -10,8 +17,7 @@
             document.getElementById('image').style.cssText =
                 "color:black;font-weight:100; font-size:100%";
         }
-    }
-
+    }    
     
 </script>
 
@@ -37,8 +43,8 @@
                 <tr>
                     <td>Фото:</td>
                     <td>
-                        <p><input accept="image/*" id="image" name="uploadImage" type="file" /></p>
-                        <script>UploadImage()</script>
+                        <p><input accept="image/*" id="image" name="uploadImage" type="file" title="Размер картинки должен быть симметричным: 200 х 200 пикселей" onchange="Update()"/></p>
+                        <script type="text/javascript">UploadImage()</script>
                     </td>
                     <td>
                         <div id="imagePosition">
@@ -55,9 +61,9 @@
                     <td>@Html.TextAreaFor(x => x.Description, new
                    {
                        id = "Description",
-                       style = "width: 500px; height: 220px; resize: none;",
-                       maxlength = 999,
-                       size = 1000,
+                       style = "width: 500px; height: 170px; resize: none;",
+                       maxlength = 349,
+                       size = 339,
                        placeholder = "Введите текст"
                    })</td>
                     <td>@Html.ValidationMessageFor(x => x.Description)</td>
@@ -79,8 +85,8 @@
             </table>
             </fieldset>
             <br/>
-            <div>
-                <input type="submit" value="Сохранить" onclick="UploadImage()"/>
+            <div class="search-button">
+                <input class="button_Buy" type="submit" value="Сохранить" onclick="UploadImage()"/>
             </div>
         }
     </div>
@@ -93,5 +99,16 @@
 }
 @section EditOrBuy
 {
-    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    @if (Session["Cart"] != null)
+        {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+        }
+        else
+        {
+            @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+        }
 }

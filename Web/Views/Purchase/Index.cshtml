@@ -11,8 +11,8 @@
                     @using (Html.BeginForm()){
                         <fieldset>
                             <div class="items">
-                                <div id="product-name">
-                                    <p>@Html.ActionLink(Model.Name, "Index", "Edit", new {id = Model.Id}, null)</p>
+                                <div class ="product-name">
+                                    <p>@Model.Name</p>
                                 </div>
                                 <div style="clear: both; height: 20px"></div>
                                 <ul>
@@ -20,20 +20,24 @@
                                         @if (Model.Image != null)
                                         {
                                             @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
-                                                           + Convert.ToBase64String(Model.Image) + "\" />")
+                                                      + Convert.ToBase64String(Model.Image) + "\" />")
                                         }
                                         else
                                         {
                                             @Html.Label("Фото отсутствует")
                                         }
                                     </div>
-                                    <div id="product-name">
-                                        @Model.Cost
+                                    <div class ="product-name">
+                                        @Model.Cost.ToString("### ###,## грн'.'")
                                     </div>
+                                    <br/>
                                     <div id="product-available">
                                         @if (Model.IsAvailable)
                                         {
-                                            <a>В наличии</a>
+                                            <div class="instock">
+                                                <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                Есть в наличии
+                                            </div>
                                         }
                                         else
                                         {
@@ -47,20 +51,38 @@
                                     </div>
                                     @if (Model != null && Model.IsMine == true)
                                     {
-                                        <div style="font-size:inherit; color:red; font-style: oblique;">
-                                            Товар пренадлежит мне!!!
+                                        <div style="font-size: inherit; color: red; font-style: oblique;">
+                                            Вы покупаете данный товар у самого себя!
                                         </div>
                                     }
-                                </ul>
+                                <br/>
                                 <div>
                                     <p>Количество:</p>
                                     <p>@Html.TextBoxFor(x=>x.Count)</p>
                                 </div>
+                                @if (Model.IsMine)
+                                {
+                                    <div style="color: red;">
+                                        <strong>Мой продукт!</strong>
+                                    </div>
+                                }</ul>
+                                <br/>
+                                <br/>
+                                    <div class="button_Buy" style="float: left">
+                                        <input type="submit"  value="Добавить в корзину" name="save" />
+                                    </div>
                             </div>
                         </fieldset>
-                        <span><input type="submit" value="Купить" name="save" style="color: green;"/></span>
+                        
                     }
                     <br/>
+                    
+                    @if (ViewBag.Message != null)
+            {
+                <fieldset style="font-size: 120%; color: red; background-color: yellowgreen;border-color: red; padding: 5px; text-align: center;">
+                    @ViewBag.Message
+                </fieldset>
+            }
                     
                 </div>
             }
@@ -75,5 +97,16 @@
 }
 @section EditOrBuy
 {
-    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    @if (Session["Cart"] != null)
+    {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
 }

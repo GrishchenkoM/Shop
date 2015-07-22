@@ -9,17 +9,20 @@
 
 @section Context{
     <div class="box-content">
-        <h2>@ViewBag.Title</h2>
-        <br/>
-        <p>
-            Теперь Вы можете выполнить @Html.ActionLink("вход на сайт", "Index", "Account").
-        </p>
+        <fieldset>
+            <br/>
+            <h2>@ViewBag.Title</h2>
+            <br/>
+            <p>
+                Теперь Вы можете выполнить @Html.ActionLink("вход на сайт", "LogIn", "Account").
+            </p>
+        </fieldset>
     </div>
 }
 
 @section LoginOrRegister{
     <div id="navigation">
-        <ul><li>@Html.ActionLink("Войти", "Index", "Account")</li></ul>
+        <ul><li>@Html.ActionLink("Войти", "LogIn", "Account")</li></ul>
     </div>
 }
 

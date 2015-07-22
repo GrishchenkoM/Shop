@@ -10,21 +10,27 @@
     <div class="box-content">
         @using (Html.BeginForm())
         {
-            <p>@Html.ValidationSummary(true)</p>
-            <table>
-                <tr>
-                    <td>Логин:</td>
-                    <td>@Html.TextBoxFor(x => x.UserName)
-                        @Html.ValidationMessageFor(x => x.UserName)</td>
-                </tr>
-                <tr>
-                    <td>Пароль:</td>
-                    <td>@Html.EditorFor(x => x.Password)
-                        @Html.ValidationMessageFor(x => x.Password)</td>
-                </tr>
-            </table>
-            <br/>
-            <input type="submit" value="Войти"/>
+            <fieldset>
+                <div class="edit">
+                    <p>@Html.ValidationSummary(true)</p>
+                    <table>
+                        <tr>
+                            <td>Логин:</td>
+                            <td>@Html.TextBoxFor(x => x.UserName)
+                                @Html.ValidationMessageFor(x => x.UserName)</td>
+                        </tr>
+                        <tr>
+                            <td>Пароль:</td>
+                            <td>@Html.EditorFor(x => x.Password)
+                                @Html.ValidationMessageFor(x => x.Password)</td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <div class="search-button">
+                        <input type="submit" value="Войти"/>
+                    </div>
+                </div>
+            </fieldset>
         }
     
         @*<p>

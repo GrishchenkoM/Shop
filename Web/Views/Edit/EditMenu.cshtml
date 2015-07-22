@@ -1,7 +1,41 @@
 ﻿@section Context{
-    <p><button onclick="location.href='@Url.Action("Index", "Create")'">Создать</button></p>
-    <p><button onclick="location.href='@Url.Action("Index", "Find")'">Найти</button></p>
-    <p><button onclick="location.href='@Url.Action("Index", "Log")'">Журнал</button></p>
+
+    <div class="box-content">
+        <fieldset>
+            <h2 style="text-align: center; padding: 5px 0 5px 0">
+                Меню пользователя
+            </h2>
+        </fieldset>
+        <br/>
+        <div id="buttons">
+            <table><tr>
+                       <td id="colum1">
+                           <p><button onclick="location.href='@Url.Action("Index", "Profile")'">Мой профиль</button></p>
+                       </td>
+                       <td id="colum2">Редактировать мой профиль</td>
+                   </tr>
+                <tr>
+                    <td>
+                        <p><button onclick="location.href='@Url.Action("Index", "Create")'">Добавить</button></p>
+                    </td>
+                    <td id="colum2">Создать и добавить новый товар</td>
+                </tr>
+                <tr>
+                    <td>
+                        <p><button onclick="location.href='@Url.Action("Index", "Find")'">Найти</button></p>
+                    </td>
+                    <td id="colum2">Найти свой товар для редактирования</td>
+                </tr>
+                <tr>
+                    <td>
+                        <p><button onclick="location.href='@Url.Action("Index", "Log")'">Журнал</button></p>
+                    </td>
+                    <td id="colum2">Просмотреть статистику продаж и покупок</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 }
 @section LoginOrRegister{
     <div id="navigation">
@@ -10,5 +44,13 @@
 }
 @section EditOrBuy
 {
-    
+    @if (Session["Cart"] != null)
+    {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+    }
+        
 }
