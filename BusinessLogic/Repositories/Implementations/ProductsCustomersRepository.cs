@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using BusinessLogic.Repositories.Interfaces;
 using Domain;
 using Domain.Entities.Interfaces;
@@ -36,23 +38,46 @@ namespace BusinessLogic.Repositories.Implementations
 
         public bool AddProdCustRelation(int userId, int currentProductId, int count)
         {
-            string query = "INSERT INTO ProductsCustomers " +
-                           "(CustomerId, ProductId, Count) " +
-                           "VALUES ({0}, {1}, {2})";
-            query = string.Format(query, userId, currentProductId, count);
+            const string query = "INSERT INTO ProductsCustomers " +
+                                 "(CustomerId, ProductId, Count) " +
+                                 "VALUES (@userId, @currentProductId, @count)";
 
-            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@userId", userId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@currentProductId", currentProductId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@count", count, SqlDbType.Int);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
                 return false;
             return true;
         }
 
-        public bool UpdateProdCastRelation(int userId, int currentProductId, int count)
+        public bool UpdateProdCastRelation(int currentProductId, int count)
         {
-            string query = "UPDATE ProductsCustomers " +
-                           "SET Count = {0} WHERE ProductId = {1} AND CustomerId = {2}";
-            query = string.Format(query, count, currentProductId, userId);
+            const string query = "UPDATE ProductsCustomers " +
+                                 "SET Count = @count WHERE ProductId = @currentProductId";
+            
+            var parameters = new List<SqlParameter>();
 
-            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+            ExecuteQuery.AddParameter(parameters, "@currentProductId", currentProductId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@count", count, SqlDbType.Int);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
+                return false;
+            return true;
+        }
+
+        public bool DeleteProdCustRelation(int productId)
+        {
+            const string query = "DELETE FROM ProductsCustomers " +
+                                 "WHERE ProductId = @productId";
+
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@productId", productId, SqlDbType.Int);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
                 return false;
             return true;
         }

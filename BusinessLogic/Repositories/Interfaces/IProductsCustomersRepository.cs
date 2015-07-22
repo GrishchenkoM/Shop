@@ -12,6 +12,8 @@ namespace BusinessLogic.Repositories.Interfaces
 
         bool AddProdCustRelation(int userId, int currentProductId, int count);
 
-        bool UpdateProdCastRelation(int userId, int currentProductId, int count);
+        bool UpdateProdCastRelation(int currentProductId, int count);
+
+        bool DeleteProdCustRelation(int productId);
     }
 }
