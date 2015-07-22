@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using BusinessLogic;
@@ -6,6 +7,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
+    [HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class AccountController : Controller
     {
         public AccountController(DataManager manager)
@@ -86,11 +88,15 @@ namespace Web.Controllers
             }
             return View(model);
         }
-        
+
+        [Authorize]
         public ActionResult LogOut()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index");
+            Session["UserId"] = -1;
+            Session["HomeViewModel"] = null;
+            Session["CurrentProductId"] = null;
+            return RedirectToAction("Index", "Home");
         }
 
         public string GetMembershipCreateStatusResultText(MembershipCreateStatus status)
