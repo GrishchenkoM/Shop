@@ -1,0 +1,53 @@
+﻿@using Web.Models
+@model SearchViewModel
+@{ Layout = null;}
+
+                @if (Model != null)
+                {
+                    if (Model.SearchResultList != null && Model.SearchResultList.Count > 0)
+                    {
+                        <br/>
+                        <h4 style="text-align: center">Результат поиска:</h4>
+                        <br/>
+                        <fieldset>
+                            @if (Model.SearchResultList.Count > 10)
+                            {
+                                <div style="width: 200px; height: 450px; overflow: auto;">
+                                    <table width="210px;">
+                                        <thead><tr><td></td><td></td><td></td></tr></thead>
+                                        @foreach (var product in Model.SearchResultList)
+                                        {
+                                            <tbody>
+                                                <a href="/Purchase/Index/@product.Id">
+                                                    @Html.Raw("<img style='width:30px; height:30px;' src=\"data:image/jpeg;base64,"
+                                                              + Convert.ToBase64String(product.Image) + "\" />")</a>
+                                                @Html.ActionLink(product.Name, "Index", "Purchase", new {id = product.Id}, null)
+                                                @Html.ActionLink(product.Cost.ToString("### ###,## грн'.'"), "Index", "Purchase", new {id = product.Id}, null)
+                                            </tbody>
+                                        }
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <table width="210px">
+                                    @foreach (var product in Model.SearchResultList)
+                                    {
+                                        <tr>
+                                            <td><a href="/Purchase/Index/@product.Id">
+                                                    @Html.Raw("<img style='width:30px; height:30px;' src=\"data:image/jpeg;base64,"
+                                                              + Convert.ToBase64String(product.Image) + "\" />")</a>
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink(product.Name, "Index", "Purchase", new {id = product.Id}, null)
+                                            </td>
+                                            <td>
+                                                @Html.ActionLink(product.Cost.ToString("### ###,## грн'.'"), "Index", "Purchase", new {id = product.Id}, null)
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                        </fieldset>
+                    }
+                }
