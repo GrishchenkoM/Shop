@@ -131,6 +131,7 @@
     <Content Include="Content\css\images\small7.jpg" />
     <Content Include="Content\images_about\photo.jpg" />
     <Content Include="Content\images_about\proglive_icon.jpg" />
+    <Content Include="Content\images_about\rats.png" />
     <Content Include="Content\images_about\sertificate1.png" />
     <Content Include="Content\images_about\sertificate2.png" />
     <Content Include="Content\css\reset.css" />
