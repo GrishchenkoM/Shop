@@ -8,17 +8,30 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <title>Free CSS template by ChocoTemplates.com</title>
         <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" type="text/css" media="all"/>
-        <!--[if lte IE 6]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" /><![endif]-->
         
-        <meta name="keywwords" content="Shop Around - Great free html template for on-line shop. Use it as a start point for your on line business. The template can be easily implemented in many open source E-commerce platforms" />
-        <meta name="description" content="Shop Around - Great free html template for on-line shop. Use it as a start point for your on line business. The template can be easily implemented in many open source E-commerce platforms" />
+        @* My Css *@
+        <link href="@Url.Content("~/Content/css/style-slider.css")" rel="stylesheet" type="text/css" media="all"/>
+        <link href="@Url.Content("~/Content/css/style-table.css")" rel="stylesheet" type="text/css" media="all"/>
+        
+        @* My jQuery *@
+        <script src="@Url.Content("~/Scripts/myScripts.js")" type="text/javascript"></script>
+
+        <meta name="keywwords" content="MICHAEL'S Shop - Great free html template for on-line shop. Use it as a start point for your on line business. The template can be easily implemented in many open source E-commerce platforms" />
+        <meta name="description" content="MICHAEL'S Shop - Great free html template for on-line shop. Use it as a start point for your on line business. The template can be easily implemented in many open source E-commerce platforms" />
         
         <!-- JS -->
+        @* !!! *@
+        @*<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js" type="text/javascript"></script>*@
+        
+        
+        
+        @*Default*@
         <script src="@Url.Content("~/Scripts/js/jquery-1.4.1.min.js")" type="text/javascript"></script>
         <script src="@Url.Content("~/Scripts/js/jquery.jcarousel.pack.js")" type="text/javascript"></script>
         <script src="@Url.Content("~/Scripts/js/jquery-func.js")" type="text/javascript"></script>
+        
         <!-- End JS -->
-
+        
     </head>
 
     <body>
@@ -29,24 +42,12 @@
 	@* Header *@	
 	<div id="header">
 		<h1 id="logo">@Html.ActionLink("MICHAEL'S SHOP", "Index", "Home")</h1>	
-		
-		@* Cart *@
-	    @*<div id="cart">
-			<a href="#" class="cart-link">Your Shopping Cart</a>
-			<div class="cl">&nbsp;</div>
-			<span>Articles: <strong>4</strong></span>
-			&nbsp;&nbsp;
-			<span>Cost: <strong>$250.99</strong></span>
-		</div>
-        *@
-        
-		@* End Cart *@
-		
+	
 		@* Navigation *@
 	    <div id="navigation">
 	        <ul>
 	            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
-	            <li><a href="#">Контакты</a></li>
+	            <li>@Html.ActionLink("О сайте", "Index", "AboutSite")</li>
                 <li>@RenderSection("EditOrBuy")</li>
 	            <li>@RenderSection("LoginOrRegister")</li>
 	        </ul>
@@ -65,13 +66,14 @@
     @* Footer *@
 	<div id="footer">
 		<p class="left">
-			<a href="#">Главная</a>
+			@Html.ActionLink("Главная", "Index", "Home")
 			<span>|</span>
-			<a href="#">Контакты</a>
+			@Html.ActionLink("О сайте", "Index", "AboutSite")
+		    <span>|</span>
+            @Html.ActionLink("Контакты", "Index", "Contacts")
 		</p>
 		<p class="right">
-			&copy; 2015 MICHAEL'S Shop.
-			Part of design by <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">Chocotemplates.com</a>
+			&copy; 2015 MICHAEL'S Shop
 		</p>
 	</div>
 	@* End Footer *@
