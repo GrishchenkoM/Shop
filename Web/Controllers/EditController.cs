@@ -10,6 +10,7 @@ using Web.Models;
 
 namespace Web.Controllers
 {
+    [Authorize, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class EditController : Controller
     {
         public EditController(DataManager manager)
@@ -19,18 +20,22 @@ namespace Web.Controllers
 
         public ActionResult Index(int id)
         {
+            int currentProductId = id;
             var product = _dataManager.Products.GetProducts()
-                .FirstOrDefault(x => x.Id == id);
+                .FirstOrDefault(x => x.Id == currentProductId);
             if (product == null)
                 return RedirectToAction("Pity", "Error");
 
             var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
-                .FirstOrDefault(x => x.ProductId == id);
+                .FirstOrDefault(x => x.ProductId == currentProductId);
 
             if (productsCustomers == null)
                 return RedirectToAction("Pity", "Error");
 
-            Session.Add("CurrentProductId", id);
+            if (productsCustomers.CustomerId != (int) Session["UserId"])
+                return RedirectToAction("Index", "Purchase", new { id = currentProductId });
+
+            Session.Add("CurrentProductId", currentProductId);
             _model = new CreateProduct
             {
                 Name = product.Name,
@@ -75,8 +80,7 @@ namespace Web.Controllers
                     if (_dataManager.Products != null)
                         answer = UpdateProduct(item, model);
                     if (answer)
-                        answer = _dataManager.ProductsCustomers.UpdateProdCastRelation((int) Session["UserId"], item.Id,
-                                                                                       model.Count);
+                        answer = _dataManager.ProductsCustomers.UpdateProdCastRelation(item.Id, model.Count);
                 }
             }
             return Redirect(answer);
@@ -109,8 +113,7 @@ namespace Web.Controllers
             {
                 int currentProductId = _dataManager.Products.UpdateProduct(item);
                 if (currentProductId == -1) return false;
-                if (_dataManager.ProductsCustomers.UpdateProdCastRelation(
-                    (int)Session["UserId"], currentProductId, model.Count))
+                if (_dataManager.ProductsCustomers.UpdateProdCastRelation(currentProductId, model.Count))
                     return true;
                 return false;
             }
@@ -123,6 +126,12 @@ namespace Web.Controllers
         {
             // if the product was bought, it mustn't be deleted from Products
             // but must be deleted from CustomersProducts
+            var orders = _dataManager.Orders.GetOrders();
+            if (orders.FirstOrDefault(x => x.ProductId == model.Id) != null)
+            {
+                return _dataManager.ProductsCustomers.DeleteProdCustRelation(model.Id);
+            }
+
             return _dataManager.Products.DeleteProduct(model.Id);
         }
         private void ReadModel(CreateProduct model, IProduct item)
