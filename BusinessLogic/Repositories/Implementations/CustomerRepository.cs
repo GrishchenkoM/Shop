@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Web.Security;
 using BusinessLogic.Repositories.Interfaces;
@@ -30,7 +31,7 @@ namespace BusinessLogic.Repositories.Implementations
                     Password = password,
                     FirstName = firstName,
                     LastName = lastName,
-                    Addres = "",
+                    Address = "",
                     CreatedDate = DateTime.Now,
                     Email = email,
                     Id = -1,
@@ -62,12 +63,31 @@ namespace BusinessLogic.Repositories.Implementations
                                           "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', CAST('{5}' AS datetime2), '{6}', '{7}', '{8}')";
                     command.CommandText = string.Format(command.CommandText,
                         customer.FirstName, customer.LastName, customer.UserName, customer.Password,
-                        customer.Email, customer.CreatedDate, customer.Addres, customer.Sex, customer.Phone);
+                        customer.Email, customer.CreatedDate, customer.Address, customer.Sex, customer.Phone);
 
                     command.ExecuteNonQuery();
                 }
             }
 
+        }
+        public int UpdateCustomer(ICustomer customer)
+        {
+            const string query = "UPDATE Customers " +
+                                 "SET FirstName = @firstName, LastName = @lastName, Password = @password, Email = @email, Address = @address, Sex = @sex, Phone = @phone " +
+                                 "WHERE Customers.Id = @id";
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@firstName", customer.FirstName, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@lastName", customer.LastName, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@password", customer.Password, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@email", customer.Email, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@address", customer.Address, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@sex", customer.Sex, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@phone", customer.Phone, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@id", customer.Id, SqlDbType.Int);
+            
+
+            return ExecuteQuery.Execute(_context, query, parameters);
         }
         public MembershipUser GetMembershipCustomerByName(string userName)
         {
@@ -139,7 +159,7 @@ namespace BusinessLogic.Repositories.Implementations
                         customer.Email = reader.GetString(5);
                         if (reader.GetValue(6) != DBNull.Value)
                             customer.CreatedDate = (DateTime)reader.GetValue(6);
-                        customer.Addres = reader.GetValue(7) != DBNull.Value ? reader.GetString(7) : "";
+                        customer.Address = reader.GetValue(7) != DBNull.Value ? reader.GetString(7) : "";
                         customer.Sex = reader.GetValue(8) != DBNull.Value ? reader.GetString(8) : "";
                         customer.Phone = reader.GetValue(9) != DBNull.Value ? reader.GetString(9) : "";
                     }

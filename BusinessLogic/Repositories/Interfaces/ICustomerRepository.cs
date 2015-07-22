@@ -15,5 +15,6 @@ namespace BusinessLogic.Repositories.Interfaces
         void SaveCustomer(ICustomer customer);
         MembershipUser GetMembershipCustomerByName(string userName);
         ICustomer GetCustomerByEmail(string email);
+        int UpdateCustomer(ICustomer customer);
     }
 }
