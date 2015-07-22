@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using BusinessLogic.Repositories.Interfaces;
 using Domain;
@@ -26,22 +28,51 @@ namespace BusinessLogic.Repositories.Implementations
 
         public bool AddNewOrder(int userId, int productId, DateTime time, int count)
         {
-            string query = "INSERT INTO Orders " +
-                           "(CustomerId, ProductId, Count, OrderDateTime) " +
-                           "VALUES ({0}, {1}, {2}, CAST( '{3}' AS datetime2))";
-            query = string.Format(query, userId, productId, count, time);
+            //const string query = "INSERT INTO Orders " +
+            //                     "(CustomerId, ProductId, Count, OrderDateTime) " +
+            //                     "VALUES (@userId, @productId, @count, CAST( '@time' AS datetime2))";
 
-            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+            const string query = "INSERT INTO Orders " +
+                                 "(CustomerId, ProductId, Count, OrderDateTime) " +
+                                 "VALUES (@userId, @productId, @count, @time)";
+
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@userId", userId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@productId", productId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@count", count, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@time", time, SqlDbType.DateTime2);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
                 return false;
             return true;
         }
 
         public bool DeleteOrder(int userId, int productId, DateTime time)
         {
-            string query = "DELETE FROM Orders WHERE CustomerId = {0} AND ProductId = {1} AND OrderDateTime = CAST( '{2}' AS datetime2)";
-            query = string.Format(query, userId, productId, time);
+            const string query = "DELETE FROM Orders WHERE CustomerId = @userId AND ProductId = @productId AND OrderDateTime = @time";
 
-            if (ExecuteQuery.ChangeProduct(_context, query) == -1)
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@userId", userId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@productId", productId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@time", time, SqlDbType.DateTime2);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
+                return false;
+            return true;
+        }
+
+        public bool DeleteOrder(int productId, DateTime time)
+        {
+            const string query = "DELETE FROM Orders WHERE ProductId = @productId AND OrderDateTime = @time";
+
+            var parameters = new List<SqlParameter>();
+
+            ExecuteQuery.AddParameter(parameters, "@productId", productId, SqlDbType.Int);
+            ExecuteQuery.AddParameter(parameters, "@time", time, SqlDbType.DateTime2);
+
+            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
                 return false;
             return true;
         }

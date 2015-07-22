@@ -12,5 +12,6 @@ namespace BusinessLogic.Repositories.Interfaces
 
         bool AddNewOrder(int userId, int productId, DateTime time, int newCount);
         bool DeleteOrder(int userId, int productId, DateTime time);
+        bool DeleteOrder(int productId, DateTime time);
     }
 }
