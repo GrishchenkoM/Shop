@@ -1,0 +1,195 @@
+﻿@section Context{
+    <head>
+        <link href="@Url.Content("../../Content/css/style-about-dev.css")" rel="stylesheet" type="text/css"/>
+    </head>
+    <div class="box-content">
+
+        <div id="resume">
+            <div class="timeline-section">
+                <div class="about-site">  
+                    <fieldset>
+                        <h3 class="main-heading"><span>Покупай! Продавай!</span></h3>   
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <h4>Купить интересующий товар, либо продать свой</h4>
+                                    <p>Вы хотите купить понравившийся товар или хотите продать свой? Без проблем! 
+                                        @Html.ActionLink("Зарегистрируйтесь!", "Register", "Account") 
+                                        И Вы сможете не только покупать и продавать, но и вести журнал покупок/продаж!</p>
+                                </div>
+                            </li>
+                        </ul> 
+                        <div class="clear"></div>
+                    </fieldset>
+                      
+                    <br/>
+
+                    <fieldset> 
+                        <h3 class="main-heading"><span>Новинка!</span></h3>   
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <h4>Вывод нового товара на экран</h4>
+                                    <p>Вы добавили свой товар, но боитесь, что его никто не увидит? Не беспокойтесь! 
+                                        На сайте реализована возможность отображения шести последних добавленных товаров.</p>
+                                </div>
+                            </li>
+                        </ul> 
+                        <div class="clear"></div>
+                    </fieldset>
+                     
+                    <br/>
+
+                    <fieldset>  
+                        <h3 class="main-heading"><span>Популярность!</span></h3>   
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <h4>Вывод товара на экран по популярности</h4>
+                                    <p>На сайте реализована возможность отображения продаваемого товара по популярности. 
+                                        Товар, который чаще всего покупают, автоматически преобретает статус Популярный. 
+                                        Градации: самый популярный, очень популярный и популярный.</p>
+                                </div>
+                            </li>
+                        </ul> 
+                        <div class="clear"></div>
+                    </fieldset>
+                      
+                    <br/>
+
+                    <fieldset> 
+                        <h3 class="main-heading"><span>Больше возможностей!</span></h3>   
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <h4>В разработке...</h4>
+                                    <p>Функционал данного сайта ограничен. Но это временное явление! 
+                                        В ближайшее время будут добавлены такие функции, как отправка пользователями друг другу текстовых сооющений, 
+                                        добавление пользователей в группу Проверенные/Друзья, а так же задание вопроса продавцу о его товаре.</p>
+                                </div>
+                            </li>
+                        </ul> 
+                        <div class="clear"></div>
+                    </fieldset>
+                    
+                    
+                    
+                    <br/>
+
+                    <fieldset style="font-style: oblique;">
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <p>Данный сайт был разработан с практической целью: закрепление теории и получение навыков разработки ASP.NET MVC приложения.</p>
+                                </div>
+                            </li>
+                        </ul> 
+        
+                        <ul class="timeline">
+                            <li>
+                                <div class="timelineUnit">
+                                    <p>Данный сайт был размещен в сети Интернет с целью ознакомления.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    
+                    <br/>
+                    <fieldset >
+                        <ul>
+                            <li>
+                                <div class="timelineUnit">
+                                    <h3 class="main-heading"><span>При разработке сайта были использованы такие языки и технологии:</span></h3>
+                                </div>
+                            </li>
+                        </ul>
+        
+                        <ul class="border">
+                            <li>ASP.NET MVC 3</li>
+                            <li>ADO.NET</li>
+                            <li>C#, SQL, LINQ</li>
+                            <li>HTML, CSS</li>
+                            <li>JavaScript, jQuery, AJAX</li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <div class="timelineUnit">
+                                    <h3 class="main-heading"><span>Помощь в разработке дизайна сайта</span></h3>
+                                </div>
+                                
+                                <div class="timelineUnit">
+                                    При разработке дизайна данного сайта было использовано два бесплатных HTML и CSS шаблона, пренадлежащих:
+                                </div>
+                            </li>
+                        </ul>
+                        <br/>
+                        <ul class="border">
+                            <li>
+                                <a style="text-decoration: none;"href="http://chocotemplates.com/">chocotemplates.com</a>
+                            </li>
+                            <li>
+                                <a style="text-decoration: none;"href="http://www.asmith.com/">asmith.com</a>
+                            </li>
+                        </ul>
+                    </fieldset> 
+                    
+                    <br/>
+                
+                
+                <div id="buttons">
+                    <table><tr>
+                               <td id="colum1">
+                                   <p>
+                                       <button onclick="location.href='@Url.Action("Index", "Contacts")'">
+                                           Информация о разработчике
+                                       </button>
+                                   </p>
+                               </td>
+                           </tr>
+                    </table>
+                </div>
+                       
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+
+
+    
+}
+
+@section LoginOrRegister{
+@if (ViewBag.CustomerId != null)
+{
+    if (ViewBag.CustomerId == -1 && ViewBag.CustomerId != 0)
+    {
+        @Html.ActionLink("Войти", "LogIn", "Account")
+        @Html.ActionLink("Зарегистрироваться", "Register", "Account")
+    }
+    else
+    {
+        @Html.ActionLink("Выйти", "LogOut", "Account")
+    }
+}
+}
+
+@section EditOrBuy
+{
+    @if (ViewBag.CustomerId != -1 && ViewBag.CustomerId != 0)
+    {
+        if (Session["Cart"] != null)
+        {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+        }
+        else
+        {
+            @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+        }
+    }
+}
