@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using BusinessLogic;
+using Domain.Entities.Interfaces;
 using Web.Models;
 
 namespace Web.Controllers
 {
+    [HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class PurchaseController : Controller
     {
         public PurchaseController(DataManager manager)
@@ -15,8 +18,15 @@ namespace Web.Controllers
 
         public ActionResult Index(int id = -1)
         {
+            int currentId = id;
+            if (Session["UserId"] != null && (int)Session["UserId"] == -1)
+                return RedirectToAction("LogIn", "Account", new { id = currentId });
+
             var product = _dataManager.Products.GetProducts().FirstOrDefault(x => x.Id == id);
             if (product == null) return RedirectToAction("Pity", "Error");
+
+            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
+                .FirstOrDefault(x => x.ProductId == product.Id);
 
             Session.Add("CurrentProductId", product.Id);
             var model = new CreateProduct
@@ -25,9 +35,13 @@ namespace Web.Controllers
                     Image = product.Image,
                     Cost = product.Cost,
                     Description = product.Description,
-                    IsAvailable = product.IsAvailable
+                    IsAvailable = product.IsAvailable,
+                    IsMine = productsCustomers.CustomerId == (int)Session["UserId"]
                 };
-            Session.Add("Model", model);
+            if (Session["CreateProductModel"] == null)
+                Session.Add("CreateProductModel", model);
+            else
+                Session["CreateProductModel"] = model;
             return View(model);
         }
 
@@ -35,46 +49,44 @@ namespace Web.Controllers
         [HttpPost,Authorize]
         public ActionResult Index(CreateProduct model)
         {
-            int newCount, purchaseCount;
-            if ((int) Session["UserId"] == -1)
+            if (Session["UserId"] != null && (int) Session["UserId"] == -1)
                 return RedirectToAction("LogIn", "Account");
-            // проверить кол-во. если просит больше - вернуть все, что осталось
-            var item = _dataManager.ProductsCustomers.GetProductsCustomers()
-                                                .FirstOrDefault(x => x.ProductId == (int) Session["CurrentProductId"]);
-            if (item == null) return RedirectToAction("Pity", "Error");
 
-            if (item.Count >= model.Count)
+            if (model.Count <= 0)
             {
-                newCount = item.Count - model.Count;
-                purchaseCount = model.Count;
-            }
-            else
-            {
-                newCount = 0;
-                purchaseCount = item.Count;
+                model = Session["CreateProductModel"] as CreateProduct;
+                return View(model);
             }
 
-            // создать запись в Order
-            DateTime time = DateTime.Now;
-            if (!_dataManager.Orders.AddNewOrder((int) Session["UserId"],
-                                                 (int)Session["CurrentProductId"], time, newCount))
-                return RedirectToAction("Pity", "Error");
+            var product = _dataManager.Products.GetProducts()
+                                                .FirstOrDefault(x => x.Id == (int) Session["CurrentProductId"]);
+            
+            if (product == null) return RedirectToAction("Pity", "Error");
 
-            // вычесть из ProductCustomers
-            if (_dataManager.ProductsCustomers.UpdateProdCastRelation((int) Session["UserId"],
-                                                                      (int)Session["CurrentProductId"], purchaseCount))
-                return RedirectToAction("Success", "Purchase", new {id = purchaseCount});
-
-            _dataManager.Orders.DeleteOrder((int) Session["UserId"],
-                                            (int)Session["CurrentProductId"], time);
-            return RedirectToAction("Pity", "Error");
+            // add to cart
+            GetCart().AddItem(product, model.Count);
+            Session["Cart"] = GetCart();
+            
+            ViewBag.Message = "Товар добавлен в корзину!";
+            ViewBag.Cart = true;
+            return View(Session["CreateProductModel"]);
         }
 
-        public ActionResult Success(int id)
+        
+        private Cart GetCart()
         {
-            ViewBag.PurchaseCount = id;
+            var cart = (Cart)Session["Cart"];
+            if (cart == null)
+            {
+                cart = new Cart();
+                Session["Cart"] = cart;
+            }
+            return cart;
+        }
 
-            return View(Session["Model"]);
+        public ActionResult Success(int id = 0)
+        {
+            return View(Session["CreateProductModel"]);
         }
 
         private readonly DataManager _dataManager;
