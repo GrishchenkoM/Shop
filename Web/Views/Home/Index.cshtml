@@ -16,8 +16,8 @@
 @section LoginOrRegister{
     @if (Model.CustomerId == -1)
     {
-        <div id="LogIn">@Html.ActionLink("Войти", "LogIn", "Account")</div>
-        <div id="Register">@Html.ActionLink("Зарегистрироваться", "Register", "Account")</div>
+        @Html.ActionLink("Войти", "LogIn", "Account")
+        @Html.ActionLink("Зарегистрироваться", "Register", "Account")
     }
     else
     {
