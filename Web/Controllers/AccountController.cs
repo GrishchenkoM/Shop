@@ -10,15 +10,20 @@ namespace Web.Controllers
     [HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class AccountController : Controller
     {
+        #region public
+
         public AccountController(DataManager manager)
         {
             _dataManager = manager;
         }
 
+        #region Index
+
         public ActionResult Index()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult Index(LoginViewModel model)
         {
@@ -34,12 +39,17 @@ namespace Web.Controllers
             return View(model);
         }
 
+        #endregion
+
+        #region LogIn
+
         public ActionResult LogIn(int id = -1)
         {
             if (id != -1)
                 Session.Add("CurrentProductId", id);
             return View();
         }
+
         [HttpPost]
         public ActionResult LogIn(LoginViewModel model)
         {
@@ -65,11 +75,15 @@ namespace Web.Controllers
             return View(model);
         }
 
+        #endregion
 
+        #region Register
+        
         public ActionResult Register()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult Register(RegisterViewModel model)
         {
@@ -88,6 +102,10 @@ namespace Web.Controllers
             }
             return View(model);
         }
+        
+        #endregion
+        
+        #region LogOut
 
         [Authorize]
         public ActionResult LogOut()
@@ -99,6 +117,8 @@ namespace Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        #endregion
+
         public string GetMembershipCreateStatusResultText(MembershipCreateStatus status)
         {
             if (status == MembershipCreateStatus.DuplicateEmail)
@@ -108,7 +128,12 @@ namespace Web.Controllers
             return "Неизвестная ошибка";
         }
 
+        #endregion
+
+        #region private
 
         private readonly DataManager _dataManager;
+
+        #endregion
     }
 }
