@@ -90,9 +90,12 @@ namespace Web.Controllers
             return RedirectToAction("Success","Purchase");
         }
 
-        private Cart GetCart()
+        // public for tests
+        public Cart GetCart()
         {
-            var cart = (Cart)Session["Cart"];
+            Cart cart = null;
+            if (Session["Cart"]!= null)
+                cart = (Cart)Session["Cart"];
             if (cart == null)
             {
                 cart = new Cart();

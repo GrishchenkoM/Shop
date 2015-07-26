@@ -46,8 +46,8 @@
 		@* Navigation *@
 	    <div id="navigation">
 	        <ul>
-	            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
-	            <li>@Html.ActionLink("О сайте", "Index", "AboutSite")</li>
+	            <li><div id="HomeLink">@Html.ActionLink("Главная", "Index", "Home")</div></li>
+	            <li><div id="AboutSiteLink">@Html.ActionLink("О сайте", "Index", "AboutSite")</div></li>
                 <li>@RenderSection("EditOrBuy")</li>
 	            <li>@RenderSection("LoginOrRegister")</li>
 	        </ul>
