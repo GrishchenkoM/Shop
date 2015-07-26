@@ -93,7 +93,7 @@ namespace Web.Controllers
         public ActionResult LogOut()
         {
             FormsAuthentication.SignOut();
-            Session["UserId"] = -1;
+            Session["UserId"] = null;
             Session["HomeViewModel"] = null;
             Session["CurrentProductId"] = null;
             return RedirectToAction("Index", "Home");
