@@ -12,6 +12,8 @@ namespace Web.Controllers
     [Authorize, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class CreateController : Controller
     {
+        #region public
+
         public CreateController(DataManager manager)
         {
             _dataManager = manager;
@@ -38,6 +40,35 @@ namespace Web.Controllers
             return View(model);
         }
 
+        public ActionResult Redirect(bool answer)
+        {
+            int result;
+            if (answer)
+                result = (int)EditController.Result.OperationSuccess;
+            else
+                result = (int)EditController.Result.Error;
+
+            return RedirectToAction("Finality", "Error", new { id = result });
+        }
+        
+        public enum Result
+        {
+            Error, AdditionSuccess, OperationSuccess
+        }
+
+        #endregion
+
+        #region private
+
+        private void ReadModel(CreateProduct model, IProduct item)
+        {
+            item.Name = model.Name;
+            item.Image = model.Image;
+            item.Description = model.Description;
+            item.Cost = model.Cost;
+            item.IsAvailable = model.IsAvailable;
+        }
+
         private bool CreateProduct(CreateProduct model, IProduct item)
         {
             try
@@ -56,6 +87,7 @@ namespace Web.Controllers
             }
 
         }
+
         private void ReadImage(CreateProduct model, HttpPostedFileBase uploadImage)
         {
             // считываем переданный файл в массив байтов
@@ -66,33 +98,8 @@ namespace Web.Controllers
             model.Image = imageData;
         }
 
-
-
-        public ActionResult Redirect(bool answer)
-        {
-            int result;
-            if (answer)
-                result = (int)EditController.Result.OperationSuccess;
-            else
-                result = (int)EditController.Result.Error;
-
-            return RedirectToAction("Finality", "Error", new { id = result });
-        }
-
-        private void ReadModel(CreateProduct model, IProduct item)
-        {
-            item.Name = model.Name;
-            item.Image = model.Image;
-            item.Description = model.Description;
-            item.Cost = model.Cost;
-            item.IsAvailable = model.IsAvailable;
-        }
-
-        public enum Result
-        {
-            Error, AdditionSuccess, OperationSuccess
-        }
-
         private DataManager _dataManager;
+
+        #endregion
     }
 }
