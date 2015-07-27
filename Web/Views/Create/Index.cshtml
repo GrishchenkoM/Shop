@@ -1,5 +1,6 @@
 ﻿@using Web.Models
 @model CreateProduct
+@{ ViewBag.Title = "Добавить";}
 
 <script>
     function Update() {
@@ -80,7 +81,7 @@
                 </tr>
                 <tr>
                     <td>Есть в наличии</td>
-                    <td>@Html.CheckBoxFor(x=>x.IsAvailable)</td>
+                    <td>@Html.CheckBoxFor(x => x.IsAvailable)</td>
                 </tr>
             </table>
             </fieldset>
@@ -100,15 +101,15 @@
 @section EditOrBuy
 {
     @if (Session["Cart"] != null)
-        {
+    {
         <div>
             <ul>
                 <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
             </ul>
         </div>
-        }
-        else
-        {
+    }
+    else
+    {
             @Html.ActionLink("Редактировать", "EditMenu", "Edit")
         }
 }

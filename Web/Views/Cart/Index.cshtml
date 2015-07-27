@@ -1,5 +1,6 @@
 ﻿@using Web.Models
 @model CartViewModel
+@{ ViewBag.Title = "Корзина";}
 
 @section Context{
     <div class="box-content">
@@ -52,7 +53,7 @@
                                     </div>
                                     <br/>
                                     <div>
-                                        <p>Общая стоимость: @((item.Product.Cost*item.Quantity).ToString("### ###,## грн'.'"))</p>
+                                        <p>Общая стоимость: @((item.Product.Cost * item.Quantity).ToString("### ###,## грн'.'"))</p>
                                     </div>
                                 </div>
                             </fieldset>

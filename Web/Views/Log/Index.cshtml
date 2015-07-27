@@ -1,9 +1,6 @@
 ﻿@using Web.Models
 @model Web.Models.LogViewModel
-
-
-
-
+@{ ViewBag.Title = "Журнал";}
 
 @section LoginOrRegister{
     @Html.ActionLink("Выйти", "LogOut", "Account")
@@ -103,7 +100,7 @@
                         {
                             <tr>
                                 <td>@item.OrderDate</td>
-                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new {id = item.ProductId}, null)</td>
+                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new { id = item.ProductId }, null)</td>
                                 <td>
                                     @Html.Raw("<img style='width:50px; height:50px;' src=\"data:image/jpeg;base64,"
                                               + Convert.ToBase64String(item.ProductImage) + "\" />")
@@ -111,11 +108,11 @@
                                 <td>@item.Count</td>
                                 @if (item.CustomerId == Model.CustomerId)
                                 {
-                                    <td>@Html.ActionLink("Я", "Index", "Customer", new {id = item.CustomerId}, null)</td>
+                                    <td>@Html.ActionLink("Я", "Index", "Customer", new { id = item.CustomerId }, null)</td>
                                 }
                                 else
                                 {
-                                    <td>@Html.ActionLink(item.CustomerName, "Index", "Customer", new {id = item.CustomerId}, null)</td>
+                                    <td>@Html.ActionLink(item.CustomerName, "Index", "Customer", new { id = item.CustomerId }, null)</td>
                                 }
                                 
                             </tr>
@@ -138,10 +135,10 @@
                 <br/>
 
 
-                if (Model != null && (Model.ItemsBought == null || Model.ItemsBought.Count == 0))
-                {
+                    if (Model != null && (Model.ItemsBought == null || Model.ItemsBought.Count == 0))
+                    {
                     @*<p>Вы еще ничего не купили</p>*@
-                }
+                    }
 
 
                 <table class="my-simple-table">
@@ -158,7 +155,7 @@
                         {
                             <tr>
                                 <td>@item.OrderDate</td>
-                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new {id = item.ProductId}, null)</td>
+                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new { id = item.ProductId }, null)</td>
                                 <td>
                                     @Html.Raw("<img style='width:50px; height:50px;' src=\"data:image/jpeg;base64,"
                                               + Convert.ToBase64String(item.ProductImage) + "\" />")
@@ -171,7 +168,7 @@
                                     }
                                     else
                                     {
-                                        @Html.ActionLink(item.CustomerName, "Index", "Customer", new {id = item.CustomerId}, null)
+                                        @Html.ActionLink(item.CustomerName, "Index", "Customer", new { id = item.CustomerId }, null)
                                     }
                                 </td>
                             </tr>

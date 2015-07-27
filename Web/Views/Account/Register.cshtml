@@ -11,49 +11,11 @@
 <br/>
 @section Context
 {
-    @*<script type="text/javascript">
-        function A(x) {
-            var table, row, cell1, cell2;
-
-            table = document.getElementById("table");
-
-            if (x == 'Продавец') {
-                if (table.rows.length == 8)
-                    table.deleteRow(table.rows.length - 1);
-                row = table.insertRow();
-                cell1 = row.insertCell(0);
-                cell2 = row.insertCell(1);
-                cell1.innerHTML = "Введите ИИН:";
-                cell2.innerHTML = "<input name='iin' type='text'/>";
-            } else if (x == 'Администратор') {
-                if (table.rows.length == 8)
-                    table.deleteRow(table.rows.length - 1);
-                row = table.insertRow();
-                cell1 = row.insertCell(0);
-                cell2 = row.insertCell(1);
-                cell1.innerHTML = "Введите код доступа:";
-                cell2.innerHTML = "<input name='iin' type='text'/>";
-            } else {
-                if (table.rows.length == 8)
-                    table.deleteRow(table.rows.length - 1);
-            }
-        }
-    </script>*@
-
     <div id="reg">
         @using (Html.BeginForm())
         {
             <fieldset>
             <div class="edit">
-                @*<p>Зарегистрироваться как: 
-                    <br/>
-                    <input type="radio" name="group1" id="buyer" value="Покупатель"  checked="checked" onclick=" A('Покупатель') "> Покупатель
-                    <br/>
-                    <input type="radio" name="group1" id="seller" value="Продавец" onclick=" A('Продавец') "> Продавец
-                    <br/>
-                    <input type="radio" name="group1" id="admin" value="Администратор" onclick=" A('Администратор') "> Администратор
-                </p>
-                <br/>*@
                 <p>
                     @Html.ValidationSummary(true)
                 </p>

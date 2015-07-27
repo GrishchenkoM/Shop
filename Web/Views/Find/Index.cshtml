@@ -1,6 +1,7 @@
 ﻿@using Domain.Entities.Interfaces
 @model IEnumerable<IProduct>
 @{
+    ViewBag.Title = "Найти";
     var ajax = new AjaxOptions
         {
             UpdateTargetId = "foundList",
