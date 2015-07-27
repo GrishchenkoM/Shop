@@ -34,14 +34,11 @@ namespace Web.Controllers
             resultModel.Cart = new Cart();
 
             int newCount, purchaseCount;
-
             DateTime time = DateTime.Now;
 
             foreach (CartLine item in cart.Lines)
             {
                 var product = _dataManager.Products.GetProducts().FirstOrDefault(x => x.Id == item.Product.Id);
-                //if (product == null) return RedirectToAction("Pity", "Error");
-
                 var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
                     .FirstOrDefault(x => x.ProductId == item.Product.Id);
 
@@ -56,21 +53,13 @@ namespace Web.Controllers
                     purchaseCount = productsCustomers.Count;
                 }
 
-                // создать запись в Order
-                
                 if (!_dataManager.Orders.AddNewOrder((int)Session["UserId"],
                                                      item.Product.Id, time, purchaseCount))
                     continue;
 
-                // вычесть из ProductCustomers
                 if (!_dataManager.ProductsCustomers.UpdateProdCastRelation(item.Product.Id, newCount))
-                {
                     _dataManager.Orders.DeleteOrder((int)Session["UserId"],
                                                 (int)Session["CurrentProductId"], time);
-
-                    //Session["CurrentProductId"] = null;
-                    //return RedirectToAction("Success", "Purchase", new { id = purchaseCount });
-                }
                 if (newCount == 0)
                 {
                     product.IsAvailable = false;
@@ -78,13 +67,7 @@ namespace Web.Controllers
                 }
                 
                 resultModel.Cart.AddItem(item.Product, item.Quantity);
-                
-                //Session["CurrentProductId"] = null;
             }
-            
-
-            //return RedirectToAction("Pity", "Error");
-
             Session["BoughtProducts"] = resultModel;
             Session["Cart"] = null;
             return RedirectToAction("Success","Purchase");
