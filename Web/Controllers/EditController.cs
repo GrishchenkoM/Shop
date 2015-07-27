@@ -13,6 +13,8 @@ namespace Web.Controllers
     [Authorize, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class EditController : Controller
     {
+        #region public
+
         public EditController(DataManager manager)
         {
             _dataManager = manager;
@@ -48,6 +50,7 @@ namespace Web.Controllers
 
             return View(_model);
         }
+
         [HttpPost]
         public ActionResult Index(CreateProduct model, FormCollection form, HttpPostedFileBase uploadImage)
         {
@@ -106,6 +109,10 @@ namespace Web.Controllers
         {
             return View();
         }
+        
+        #endregion
+
+        #region private
 
         private bool UpdateProduct(IProduct item, CreateProduct model)
         {
@@ -122,10 +129,9 @@ namespace Web.Controllers
                 return false;
             }
         }
+
         private bool DeleteProduct(CreateProduct model)
         {
-            // if the product was bought, it mustn't be deleted from Products
-            // but must be deleted from CustomersProducts
             var orders = _dataManager.Orders.GetOrders();
             if (orders.FirstOrDefault(x => x.ProductId == model.Id) != null)
             {
@@ -134,6 +140,7 @@ namespace Web.Controllers
 
             return _dataManager.Products.DeleteProduct(model.Id);
         }
+
         private void ReadModel(CreateProduct model, IProduct item)
         {
             item.Name = model.Name;
@@ -154,6 +161,9 @@ namespace Web.Controllers
         }
 
         private readonly DataManager _dataManager;
+
         private CreateProduct _model;
+
+        #endregion
     }
 }
