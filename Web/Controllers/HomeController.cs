@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Web.Mvc;
 using BusinessLogic;
-using Domain.Entities;
 using Domain.Entities.Interfaces;
 using Web.Models;
 

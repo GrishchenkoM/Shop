@@ -44,7 +44,6 @@ namespace Web.Controllers
                 Session["CreateProductModel"] = model;
             return View(model);
         }
-
         
         [HttpPost,Authorize]
         public ActionResult Index(CreateProduct model)
@@ -72,6 +71,10 @@ namespace Web.Controllers
             return View(Session["CreateProductModel"]);
         }
 
+        public ActionResult Success(int id = 0)
+        {
+            return View(Session["CreateProductModel"]);
+        }
         
         private Cart GetCart()
         {
@@ -82,11 +85,6 @@ namespace Web.Controllers
                 Session["Cart"] = cart;
             }
             return cart;
-        }
-
-        public ActionResult Success(int id = 0)
-        {
-            return View(Session["CreateProductModel"]);
         }
 
         private readonly DataManager _dataManager;

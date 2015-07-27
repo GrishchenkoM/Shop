@@ -31,6 +31,6 @@ namespace Web.Controllers
             return View(model);
         }
 
-        private DataManager _manager;
+        private readonly DataManager _manager;
     }
 }
