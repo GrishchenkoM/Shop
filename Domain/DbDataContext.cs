@@ -18,10 +18,10 @@ namespace Domain
         }
 
         #region EF
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductsCustomers> ProductsCustomerses { get; set; }
+        //public DbSet<Customer> Customers { get; set; }
+        //public DbSet<Order> Orders { get; set; }
+        //public DbSet<Product> Products { get; set; }
+        //public DbSet<ProductsCustomers> ProductsCustomerses { get; set; }
         #endregion
 
         public string ConnectionString
@@ -30,9 +30,9 @@ namespace Domain
         }
 
         private IEnumerable<IProduct> _products;
-        //public IEnumerable<IProduct> Products { get; private set; }
-
-
-        
+        public IEnumerable<Customer> Customers { get; set; }
+        public IEnumerable<Order> Orders { get; set; }
+        public IEnumerable<Product> Products { get; set; }
+        public IEnumerable<ProductsCustomers> ProductsCustomerses { get; set; }
     }
 }
