@@ -22,7 +22,11 @@
             Ошибка произошла в результате обращения к действию @Model.ActionName
         </div>
         <div>
-            Тип ошибки: @Model.Exception.Message
+            <p>Тип ошибки: @Model.Exception.Message</p>
+            <p>Стек ошибки: @Model.Exception.StackTrace</p>
+            <p>Source: @Model.Exception.Source</p>
+            <p>InnerException: @Model.Exception.InnerException</p>
+            <p>Data: @Model.Exception.Data</p>
         </div>
         <br/>
         <br/>
