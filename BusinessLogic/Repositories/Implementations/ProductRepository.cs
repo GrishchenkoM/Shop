@@ -21,15 +21,19 @@ namespace BusinessLogic.Repositories.Implementations
             return ExecuteQuery.GetProducts(_context, query);
         }
 
+        public IEnumerable<IProduct> GetPopularProducts()
+        {
+            const string query = @"select * from Products where Products.Id = any (
+                                    select Orders.ProductId from Orders)
+                                    order by (select count(*) from Orders 
+                                    where Orders.ProductId = Products.Id) desc;";
+            return ExecuteQuery.GetProducts(_context, query);
+        }
+
         public IProduct GetProductById(int productId)
         {
             return _context.Products.FirstOrDefault(x => x.Id == productId);
         }
-
-        //public IEnumerable<IProduct> GetProductsByCustomer(int customerId)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public IEnumerable<IProduct> GetAvailableProducts()
         {

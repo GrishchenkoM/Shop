@@ -120,23 +120,20 @@ namespace Web.Controllers
         private void SetModelPopularProducts(HomeViewModel model, IEnumerable<IProduct> products, IEnumerable<IOrder> orders,
                                              IEnumerable<IProductsCustomers> productsCustomers)
         {
-            var innerJoinQuery =
-                (from prod in products
-                 join order in orders
-                     on prod.Id equals order.ProductId
-                 join prodCust in productsCustomers
-                     on prod.Id equals prodCust.ProductId
-                 where prodCust.Count > 0
-                 orderby order.Count descending
-                 select prod);
-
-            var distinctInnerJoinQuery = innerJoinQuery.Distinct();
-
+            var innerJoinQuery = _dataManager.Products.GetPopularProducts();
+                
+            var joinQuery = innerJoinQuery.Distinct();
+            
             model.PopularProducts = new List<IProduct>();
-            foreach (var product in distinctInnerJoinQuery)
+
+            try
             {
-                model.PopularProducts.Add(product);
+                foreach (var product in joinQuery)
+                {
+                    model.PopularProducts.Add(product);
+                }
             }
+            catch (Exception){}
         }
 
         private void SetModelProducts(HomeViewModel model, IEnumerable<IProduct> products, IEnumerable<IProductsCustomers> productsCustomers)
