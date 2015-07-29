@@ -24,7 +24,7 @@ namespace Web.Models
             }
         }
 
-        public void RemoveLine(IProduct product)
+        public void RemoveItem(IProduct product)
         {
             lineCollection.RemoveAll(x => x.Product.Id == product.Id);
         }
@@ -42,6 +42,11 @@ namespace Web.Models
         public IEnumerable<CartLine> Lines
         {
             get { return lineCollection; }
+        }
+
+        public bool IsEmpty
+        {
+            get { return lineCollection.Count == 0; }
         }
     }
 

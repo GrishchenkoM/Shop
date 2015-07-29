@@ -16,21 +16,35 @@ namespace Web.Controllers
 
         public ActionResult Index()
         {
-            return View(new CartViewModel()
-            {
+            return View(new CartViewModel
+                {
                 Cart = GetCart()
             });
         }
 
         [HttpPost]
-        public ActionResult Index(CartViewModel model)
+        public ActionResult Index(CartViewModel model, FormCollection form)
         {
             var cart = Session["Cart"] as Cart;
             if (cart == null) return RedirectToAction("Index", "Home");
-            var resultModel = new CartViewModel();
-            resultModel.Cart = new Cart();
+            var resultModel = new CartViewModel {Cart = new Cart()};
 
-            int newCount, purchaseCount;
+            if (form.Keys.Count != 0) 
+            {
+                for (int i = 0; i < form.Keys.Count; ++i)
+                {
+                    string name = form.GetKey(i);
+                    if (name.Contains("delete_all"))
+                    {
+                        GetCart().Clear();
+                        Session["Cart"] = null;
+                        ViewBag.IsAddToCart = null;
+                        ViewBag.CartIsEmpty = true;
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+
             DateTime time = DateTime.Now;
 
             foreach (CartLine item in cart.Lines)
@@ -39,6 +53,8 @@ namespace Web.Controllers
                 var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
                     .FirstOrDefault(x => x.ProductId == item.Product.Id);
 
+                int newCount;
+                int purchaseCount;
                 if (item.Quantity < productsCustomers.Count)
                 {
                     newCount = productsCustomers.Count - item.Quantity;
@@ -70,8 +86,7 @@ namespace Web.Controllers
             return RedirectToAction("Success","Purchase");
         }
 
-        // public for tests
-        public Cart GetCart()
+        private Cart GetCart()
         {
             Cart cart = null;
             if (Session["Cart"]!= null)
@@ -84,20 +99,46 @@ namespace Web.Controllers
             return cart;
         }
 
-        //public ActionResult RemoveFromCart(int id)
-        //{
-        //    var product = _dataManager.ProductsCustomers.GetProductsCustomers()
-        //                                        .FirstOrDefault(x => x.ProductId == (int)Session["CurrentProductId"]);
+        public ActionResult ProductsList(Cart model, FormCollection form)
+        {
+            // make in cycle
+            if (form.Keys.Count != 0) // if input exists
+            {
+                for (int i = 0; i < form.Keys.Count; ++i )
+                {
+                    string name = form.GetKey(i);
+                    if (name.Contains("delete"))
+                    {
+                        string id = name.Substring(name.IndexOf('_') + 1, name.Length - 1 - name.IndexOf('_'));
 
-        //    if (product != null)
-        //    {
-        //        GetCart().RemoveLine((IProduct)product);
-        //        ViewBag.Message = "Товар удален из корзины";
-        //    }
-        //    else
-        //        ViewBag.Message = "Товар не может быть удален из корзины";
-        //    return View(Session["Cart"]);
-        //}
+                        var product = _dataManager.Products.GetProducts().FirstOrDefault(x=>x.Id == Convert.ToInt32(id));
+
+                        GetCart().RemoveItem(product);
+                        if (GetCart().IsEmpty)
+                        {
+                            ViewBag.IsAddToCart = null;
+                            Session["Cart"] = null;
+                        }
+                        else
+                        {
+                            Session["Cart"] = GetCart();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (Session["Cart"] == null)
+            {
+                ViewBag.CartIsEmpty = true;
+                return View("ProductsList", null);
+            }
+
+            return View("ProductsList", new CartViewModel()
+            {
+                Cart = GetCart()
+            });
+        }
 
         private readonly DataManager _dataManager;
     }
