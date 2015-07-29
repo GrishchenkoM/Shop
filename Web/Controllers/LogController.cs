@@ -207,10 +207,16 @@ namespace Web.Controllers
 
         private void MySoldOrders(IEnumerable<IOrder> orders, IEnumerable<IProduct> myProducts, out List<IOrder> mySoldOrders)
         {
-            mySoldOrders = (from order in orders
-                            join ownProduct in myProducts
-                                on order.ProductId equals ownProduct.Id
-                            select order).ToList();
+            mySoldOrders = new List<IOrder>();
+            try
+            {
+                mySoldOrders = (from order in orders
+                             join ownProduct in myProducts
+                                 on order.ProductId equals ownProduct.Id
+                             select order).ToList();
+            }
+            catch (Exception)
+            {}
         }
 
         private void GetAllDataFromDb(out IEnumerable<IOrder> orders, out IEnumerable<IProduct> products, out IEnumerable<IProductsCustomers> productsCustomers,
