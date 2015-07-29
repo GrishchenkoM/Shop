@@ -78,12 +78,12 @@
                     }
                     <br/>
                     
-                    @if (ViewBag.Message != null)
-            {
-                <fieldset style="font-size: 120%; color: red; background-color: yellowgreen;border-color: red; padding: 5px; text-align: center;">
-                    @ViewBag.Message
-                </fieldset>
-            }
+                    @if (ViewBag.IsAddToCart != null && ViewBag.IsAddToCart)
+                    {
+                        <fieldset style="font-size: 120%; color: red; background-color: yellowgreen; border-color: red; padding: 5px; text-align: center;">
+                            Товар добавлен в @Html.ActionLink("корзину","Index","Cart")!
+                        </fieldset>
+                    }
                     
                 </div>
             }
