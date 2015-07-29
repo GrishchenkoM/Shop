@@ -105,7 +105,7 @@ namespace BusinessLogic
             }
         }
 
-        public static IOrder GetOrder(DbDataContext context, string query)
+        public static IEnumerable<IOrder> GetOrder(DbDataContext context, string query)
         {
             using (var connection = new SqlConnection(context.ConnectionString))
             {
@@ -114,18 +114,20 @@ namespace BusinessLogic
                 {
                     command.CommandText = query;
                     SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
-                    Order order = null;
-                    if (reader.Read())
+                    List<IOrder> orders = null; 
+                    while (reader.Read())
                     {
-                        order = new Order
+                        if (orders == null) orders = new List<IOrder>();
+                        var order = new Order
                             {
                                 CustomerId = reader.GetInt32(1),
                                 ProductId = reader.GetInt32(2),
                                 Count = reader.GetInt32(3),
                                 OrderDateTime = (DateTime) reader.GetValue(4)
                             };
+                        orders.Add(order);
                     }
-                    return order;
+                    return orders;
                 }
             }
         }

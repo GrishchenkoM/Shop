@@ -23,7 +23,9 @@ namespace BusinessLogic.Repositories.Implementations
 
         public IEnumerable<IOrder> GetOrders()
         {
-            return _context.Orders;
+            //return _context.Orders;
+            const string query = @"select * from Orders";
+            return ExecuteQuery.GetOrder(_context, query);
         }
 
         public bool AddNewOrder(int userId, int productId, DateTime time, int count)
