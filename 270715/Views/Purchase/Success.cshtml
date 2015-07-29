@@ -1,0 +1,66 @@
+﻿@using Web.Models
+@{ ViewBag.Title = "Купить";}
+
+@section LoginOrRegister{
+@Html.ActionLink("Выйти", "LogOut", "Account"))
+}
+
+@section EditOrBuy
+{
+    @if (Session["UserId"] != null && (int)Session["UserId"]  != -1)
+    {
+        @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
+}
+
+@section Context{
+<br/>
+    <fieldset>
+        <div >
+            <div class="center">
+                <div id="">
+                    <div class="edit">
+                
+                        @if (Session["BoughtProducts"] != null && ((CartViewModel) Session["BoughtProducts"]).Cart.Lines.Any())
+                        {
+                            <h1>Поздравляем!</h1>
+                            <br/>
+                            <h2>Вы совершили покупку на нашем сайте!</h2>
+                            <br/>
+                        
+                            <table class="my-simple-table">
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Количество</th>
+                                    <th>Стоимость</th>
+                                </tr>
+                                @foreach (var item in ((CartViewModel)Session["BoughtProducts"]).Cart.Lines)
+                                {
+                                    <tr>
+                                        <td>@item.Product.Name</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@((item.Product.Cost * item.Quantity).ToString("### ###,## грн'.'"))</td>
+                                    </tr>
+                                }
+                            </table>
+                            <br/>
+                            <table class="my-simple-table">
+                                <tr>
+                                    <th>Общая стоимость покупок</th>
+                                    <td>@(((CartViewModel)Session["BoughtProducts"]).Cart.ComputeTotalValue().ToString("### ###,## грн'.'"))</td>
+                                </tr>
+                            </table>
+                        }
+                        else
+                        {
+                            <span>Ошибка! Не было куплено ни одного товара</span>
+                        }
+                        <br/>
+                        <br/>
+                        <h2>Спасибо! Мы будем рады видеть Вас снова!</h2>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </fieldset>
+}

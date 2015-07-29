@@ -1,0 +1,27 @@
+﻿@using System.Collections
+@using Domain.Entities
+@using Web.Models
+@model LoginViewModel
+
+@{
+    ViewBag.Title = "Добро пожаловать!";
+}
+
+@*<h2>Добро пожаловать в наш магазин!</h2>*@
+@section LoginOrRegister{
+    <div>
+        <p>
+            @Html.ActionLink("Войти", "LogIn")@Html.ActionLink("Зарегистрироваться", "Register")
+        </p>
+    </div>
+
+}
+
+@section Context{
+
+}
+
+@section EditOrBuy
+{
+    
+}

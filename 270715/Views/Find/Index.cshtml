@@ -1,0 +1,50 @@
+﻿@using Domain.Entities.Interfaces
+@model IEnumerable<IProduct>
+@{
+    ViewBag.Title = "Найти";
+    var ajax = new AjaxOptions
+        {
+            UpdateTargetId = "foundList",
+            Url = Url.Action("GetFoundProducts"),
+            LoadingElementId = "loadingElement"
+        };
+}           
+
+@section Context{
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    @using (Ajax.BeginForm(ajax))
+    {
+        <div class="box-content">
+            <div>
+                <p>
+                    Найти товар:
+                </p>
+                <p>@Html.TextBox("searchString")</p>
+                <br/>
+                <div class="search-button">
+                    <p>
+                        <input type="submit" value="Найти товар"/>
+                    </p>
+                </div>
+                <br/>
+                <div id="loadingElement" style="display: none; color: red">ЗАГРУЗКА...</div>
+            </div>
+            <div style="clear: both; height: 10px"></div>
+            <div id="foundList">
+                
+                    @Html.Action("GetFoundProducts", new {searchString = ViewBag.SearchString})
+
+            </div>
+        </div>
+        <div style="clear: both; height: 10px"></div>
+    }
+}
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+}

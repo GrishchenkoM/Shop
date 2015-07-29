@@ -1,0 +1,190 @@
+﻿@using Web.Models
+@model Web.Models.LogViewModel
+@{ ViewBag.Title = "Журнал";}
+
+@section LoginOrRegister{
+    @Html.ActionLink("Выйти", "LogOut", "Account")
+}
+
+@section EditOrBuy
+{
+    @if (Model.CustomerId != -1 && Model.CustomerId != 0)
+    {
+        if (Session["Cart"] != null)
+        {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+        }
+        else
+        {
+            @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+        }
+    }
+}
+
+@section Context{
+
+    <script type="text/javascript">
+        $(document).ready(
+            function() {
+                $('#tabs li').click(
+                    function() {
+                        var number = $(this).index();
+                        $('#tabs h2').hide().eq(number).show();
+                        $('#tabs p').hide().eq(number).show();
+                        $('#tabs table').hide().eq(number).show();
+                        $(this).toggleClass('active inactive');
+                        $('#tabs li').not(this).removeClass('active').addClass('inactive');
+                    });
+                $('#tabs h2').not(':first').hide();
+                $('#tabs p').not(':first').hide();
+                $('#tabs table').not(':first').hide();
+            }
+        );
+    </script>
+        
+    <div id="tabs">
+        <div id="navbar">
+            <ul>
+                <li class="active"><a href="#" title="Список проданных товаров">Продажи<span class="notification">
+                                                                                           @if (Model != null && Model.ItemsSold != null)
+                                                                                           {
+                                                                                               @Model.ItemsSold.Count
+                                                                                           }
+                                                                                           else
+                                                                                           {
+                                                                                               <p>0</p>
+                                                                                           }
+                                                                                       </span></a></li>
+                <li class="inactive"><a href="#" title="Список купленных товаров">Покупки<span class="notification">
+                                                                                             @if (Model != null && Model.ItemsBought != null)
+                                                                                             {
+                                                                                                 @Model.ItemsBought.Count
+                                                                                             }
+                                                                                             else
+                                                                                             {
+                                                                                                 <span>0</span>
+                                                                                             }
+                                                                                         </span></a></li>
+            </ul>
+        </div>
+
+        <div id="slider_log">
+            <h2>Список проданных товаров</h2>
+            <br/>
+            @using (Html.BeginForm("Submit", "Log", FormMethod.Post))
+            {
+                if (Model != null && Model.ItemsSold != null && Model.ItemsSold.Count != 0)
+                {
+                    <p>Приблизительная выручка: <strong>@Model.ApproximateAmount.ToString("### ###,## грн'.'")</strong></p>
+                }
+                else
+                {
+                    @*<p>Ваш товар не был куплен ни разу.</p>*@
+                }
+
+                <table class="my-simple-table">
+                    @if (Model != null && Model.ItemsSold != null && Model.ItemsSold.Count != 0)
+                    {
+                        <tr>
+                            <th>Дата</th>
+                            <th>Наименование товара</th>
+                            <th>Фото</th>
+                            <th>Количество</th>
+                            <th>Покупатель</th>
+                        </tr>
+                        foreach (var item in Model.ItemsSold)
+                        {
+                            <tr>
+                                <td>@item.OrderDate</td>
+                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new { id = item.ProductId }, null)</td>
+                                <td>
+                                    @Html.Raw("<img style='width:50px; height:50px;' src=\"data:image/jpeg;base64,"
+                                              + Convert.ToBase64String(item.ProductImage) + "\" />")
+                                </td>
+                                <td>@item.Count</td>
+                                @if (item.CustomerId == Model.CustomerId)
+                                {
+                                    <td>@Html.ActionLink("Я", "Index", "Customer", new { id = item.CustomerId }, null)</td>
+                                }
+                                else
+                                {
+                                    <td>@Html.ActionLink(item.CustomerName, "Index", "Customer", new { id = item.CustomerId }, null)</td>
+                                }
+                                
+                            </tr>
+                        }
+                        @*if (Model.ItemsSold.Any())
+                        {
+
+                            <tr>
+                                <td colspan="5">
+                                    <input type="submit" class="search-button" value="Очистить список проданных товаров" name="ClearSoldItems"/>
+                                </td>
+                            </tr>
+
+                        }*@
+                    }
+                </table>
+
+
+                <h2>Список купленных товаров</h2>
+                <br/>
+
+
+                    if (Model != null && (Model.ItemsBought == null || Model.ItemsBought.Count == 0))
+                    {
+                    @*<p>Вы еще ничего не купили</p>*@
+                    }
+
+
+                <table class="my-simple-table">
+                    @if (Model != null && Model.ItemsBought != null && Model.ItemsBought.Count != 0)
+                    {
+                        <tr>
+                            <th>Дата</th>
+                            <th>Наименование товара</th>
+                            <th>Фото</th>
+                            <th>Количество</th>
+                            <th>Продавец</th>
+                        </tr>
+                        foreach (var item in Model.ItemsBought)
+                        {
+                            <tr>
+                                <td>@item.OrderDate</td>
+                                <td>@Html.ActionLink(item.ProductName, "Index", "Edit", new { id = item.ProductId }, null)</td>
+                                <td>
+                                    @Html.Raw("<img style='width:50px; height:50px;' src=\"data:image/jpeg;base64,"
+                                              + Convert.ToBase64String(item.ProductImage) + "\" />")
+                                </td>
+                                <td>@item.Count</td>
+                                <td>
+                                    @if (item.IsMine)
+                                    {
+                                        <h3>Я</h3>
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(item.CustomerName, "Index", "Customer", new { id = item.CustomerId }, null)
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        if (Model.ItemsBought.Any())
+                        {
+
+                            <tr>
+                                <td colspan="5">
+                                    <input type="submit" id="buttons" value="Очистить список купленных товаров" name="ClearBoughtItems" />
+                                </td>
+                            </tr>
+
+                        }
+                    }
+                </table>
+            }
+    </div></div>
+}

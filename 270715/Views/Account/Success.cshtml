@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Регистрация прошла успешно!";
+}
+
+@section Context{
+    <div class="box-content">
+        <fieldset>
+            <br/>
+            <h2>@ViewBag.Title</h2>
+            <br/>
+            <p>
+                Теперь Вы можете выполнить @Html.ActionLink("вход на сайт", "LogIn", "Account").
+            </p>
+        </fieldset>
+    </div>
+}
+
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Войти", "LogIn", "Account")</li></ul>
+    </div>
+}
+
+@section EditOrBuy
+{
+    
+}

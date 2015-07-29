@@ -1,0 +1,113 @@
+﻿@using Web.Models
+@model CreateProduct
+@{ ViewBag.Title = "Купить";}
+
+@section Context{
+    <div class="box-content">
+        <div style="clear: both; height: 10px"></div>
+        <div class="box">
+            @if (Model != null)
+            {
+                <div class="box-content">
+                    @using (Html.BeginForm()){
+                        <fieldset>
+                            <div class="items">
+                                <div class ="product-name">
+                                    <p>@Model.Name</p>
+                                </div>
+                                <div style="clear: both; height: 20px"></div>
+                                <ul>
+                                    <div id="product-image">
+                                        @if (Model.Image != null)
+                                        {
+                                            @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+                                                      + Convert.ToBase64String(Model.Image) + "\" />")
+                                        }
+                                        else
+                                        {
+                                            @Html.Label("Фото отсутствует")
+                                        }
+                                    </div>
+                                    <div class ="product-name">
+                                        @Model.Cost.ToString("### ###,## грн'.'")
+                                    </div>
+                                    <br/>
+                                    <div id="product-available">
+                                        @if (Model.IsAvailable)
+                                        {
+                                            <div class="instock">
+                                                <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                                Есть в наличии
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <b>Нет на складе</b>
+                                        }
+                                    </div>
+                                    <div style="height: 10px"></div>
+                                    <div>
+                                        <p>Описание:</p>
+                                        @Model.Description
+                                    </div>
+                                    @if (Model != null && Model.IsMine == true)
+                                    {
+                                        <div style="font-size: inherit; color: red; font-style: oblique;">
+                                            Вы покупаете данный товар у самого себя!
+                                        </div>
+                                    }
+                                <br/>
+                                <div>
+                                    <p>Количество:</p>
+                                    <p>@Html.TextBoxFor(x=>x.Count)</p>
+                                </div>
+                                @if (Model.IsMine)
+                                {
+                                    <div style="color: red;">
+                                        <strong>Мой продукт!</strong>
+                                    </div>
+                                }</ul>
+                                <br/>
+                                <br/>
+                                    <div class="button_Buy" style="float: left">
+                                        <input type="submit"  value="Добавить в корзину" name="save" />
+                                    </div>
+                            </div>
+                        </fieldset>
+                        
+                    }
+                    <br/>
+                    
+                    @if (ViewBag.Message != null)
+            {
+                <fieldset style="font-size: 120%; color: red; background-color: yellowgreen;border-color: red; padding: 5px; text-align: center;">
+                    @ViewBag.Message
+                </fieldset>
+            }
+                    
+                </div>
+            }
+        </div>
+    </div>
+    <div style="clear: both; height: 10px"></div>
+}
+@section LoginOrRegister{
+    <div id="navigation">
+        <ul><li>@Html.ActionLink("Выйти", "LogOut", "Account")</li></ul>
+    </div>
+}
+@section EditOrBuy
+{
+    @if (Session["Cart"] != null)
+    {
+        <div>
+            <ul>
+                <li>@Html.ActionLink("Корзина", "Index", "Cart")</li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
+}

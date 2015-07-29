@@ -1,0 +1,142 @@
+/** {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+	font-family: helvetica, tahoma, Sans-serif;
+    font-size: 13px;
+    background: url(images/bg.jpg) repeat;
+}*/
+
+/*###########################################
+text & links
+###########################################*/
+
+#slider_log a { 
+    text-decoration: none;
+}
+
+#slider_log h2 {
+    font-family: Helvetica, tahoma, Sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    text-shadow: 0 1px 1px white;
+}
+
+#slider_log p {
+    text-shadow: 0 1px 1px white;
+}
+
+/*###########################################
+navbar
+###########################################*/
+
+#navbar {
+    margin: 20px 0 0 40px;
+    width: 880px;
+    font-weight: bold;
+}
+
+/*###########################################
+ul li (all)
+###########################################*/
+
+#navbar ul li{
+    display: inline-block;
+}
+
+#navbar ul li a {
+    position: relative;
+    display: block;
+    width: 440px;
+    text-align: center;
+}
+
+/*###########################################
+Active
+###########################################*/
+
+.active a{
+    padding: 28px 0 20px 0;
+    background: -webkit-gradient(linear, left top, left bottom, from(#db0000), to(#9b0000));
+    background: -moz-linear-gradient(top center, #db0000, #9b0000);
+    border: 1px solid #8d0000;
+    text-shadow: 0 1px 1px black;
+    -webkit-border-radius: 10px 10px 0 0;
+    -webkit-background-clip: padding-box;
+    -webkit-box-shadow: inset 0 0 1px #fd0000;
+    -moz-border-radius: 10px 10px 0 0;
+    -moz-background-clip: padding-box;
+    -moz-box-shadow: inset 0 0 1px #fd0000;
+    margin-left: -5px;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 1px 1px black;
+}
+
+.active a:focus {
+    outline: none;
+}
+
+/*###########################################
+Inactive
+###########################################*/
+
+
+.inactive a:hover {
+    background: -webkit-gradient(linear, left bottom, left top, from(#eee), to(#ddd));
+    background: -moz-linear-gradient(top center, #ddd, #eee);
+}
+
+.inactive a {
+    color: #222;
+    text-shadow: 0 1px 1px white;
+    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ddd));
+    background: -moz-linear-gradient(top center, #eee, #ddd);
+    -webkit-box-shadow: inset 0 0 5px white;
+    -moz-box-shadow: inset 0 0 5px white;
+    padding: 20px 0;
+    -webkit-box-shadow: inset 0 0 5px white;
+    -moz-box-shadow: inset 0 0 5px white;
+    border: 1px solid #ccc;
+    margin-left: -5px;
+    z-index: 1;
+}
+
+.inactive a:focus {
+    outline: none;
+}
+
+/*###########################################
+notification
+###########################################*/
+span.notification {;
+    position: absolute;
+    padding: 5px;
+    margin-top: -6px;
+    color: white;
+    min-width: 15px;
+    text-align: center;
+    border: 1px solid #000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#2a2a2a), to(#222));
+    background: -moz-linear-gradient(top center, #2a2a2a, #222);
+    -webkit-box-shadow: inset 0 0 1px #333;
+    -moz-box-shadow: inset 0 0 1px #333;
+    text-shadow: 0 -1px 1px black;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    margin-left: 10px;
+}
+
+/*###########################################
+slider
+###########################################*/
+
+#slider_log {
+    width: 555px;
+    background: rgba(250,250,250,0.3);
+    padding: 30px 25px 30px 25px;
+    line-height: 25px;
+    margin-left: 35px;
+}
