@@ -66,13 +66,13 @@ namespace Web.Controllers
             GetCart().AddItem(product, model.Count);
             Session["Cart"] = GetCart();
             
-            ViewBag.Message = "Товар добавлен в корзину!";
-            ViewBag.Cart = true;
+            ViewBag.IsAddToCart = true;
             return View(Session["CreateProductModel"]);
         }
 
         public ActionResult Success(int id = 0)
         {
+            ViewBag.IsAddToCart = null;
             return View(Session["CreateProductModel"]);
         }
         
