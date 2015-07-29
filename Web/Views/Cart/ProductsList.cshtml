@@ -1,0 +1,69 @@
+﻿@using Web.Models
+@model CartViewModel
+@{ Layout = null;}
+
+@if (Model != null)
+{
+    foreach (var item in Model.Cart.Lines)
+    {
+        <fieldset>
+            <div class="items">
+                <div class ="product-name">
+                    <p>@item.Product.Name</p>
+                </div>
+                <div style="clear: both; height: 20px"></div>
+                <ul>
+                    <div id="product-image">
+                        @if (item.Product.Image != null)
+                        {
+                            @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+                                      + Convert.ToBase64String(item.Product.Image) + "\" />")
+                        }
+                        else
+                        {
+                            @Html.Label("Фото отсутствует")
+                        }
+                    </div>
+                    <div style="height: 10px"></div>
+                                        
+                    @if (item.IsMine)
+                    {
+                        <div style="font-size: inherit; color: red; font-style: oblique;">
+                            Это Ваш товар! Вы покупаете данный товар у самого себя!
+                        </div>
+                        <br/>
+                    }
+                </ul>
+                <div class ="product-name">
+                    @item.Product.Cost.ToString("### ###,## грн'.'")
+                </div>
+                <br/>
+                <div>
+                    <p>Количество:
+                        <strong>@item.Quantity</strong>
+                    </p>
+                </div>
+                <br/>
+                <div>
+                    <p>Общая стоимость: @((item.Product.Cost*item.Quantity).ToString("### ###,## грн'.'"))</p>
+                </div>
+            
+            </div>
+            <div>
+                @{
+                    string name = string.Format("delete_{0}", item.Product.Id);
+                    <div class="search-button">
+                        <input type="submit" value="Удалить" name="@name"/>
+                    </div>
+                }
+            </div>
+        </fieldset>
+        <br/>
+    }
+}
+else if(ViewBag.CartIsEmpty != null && ViewBag.CartIsEmpty)
+{
+    <div style="color: red;">
+        <strong>Корзина пуста!</strong>
+    </div>
+}

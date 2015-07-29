@@ -1,0 +1,74 @@
+﻿@model Domain.Entities.Customer
+@{ ViewBag.Title = "Информация о пользователе";}
+
+@section LoginOrRegister{
+    @Html.ActionLink("Выйти", "LogOut", "Account")
+}
+
+@section EditOrBuy
+{
+    @if (ViewBag.CustomerId != null && ViewBag.CustomerId != -1 && ViewBag.CustomerId != 0)
+    {
+        @Html.ActionLink("Редактировать", "EditMenu", "Edit")
+    }
+}
+
+@section Context{
+    <br />
+    @if (Model != null)
+    {
+        <div style="margin-left: 80px;">
+            <span>
+                <strong>Пользователь: &nbsp; <font style="font-size: x-large;">@Model.UserName</font></strong>
+            </span>
+        </div>
+        <br/>
+        <div>
+            <table class="my-simple-table" style="margin: auto;">
+                <tr>
+                    <th style="width: 200px;">Фамилия:</th>
+                    <td>@Model.LastName</td>
+                </tr>
+                <tr>
+                    <th>Имя:</th>
+                    <td>@Model.FirstName</td>
+                </tr>
+                <tr>
+                    <th>Дата регистрации:</th>
+                    <td>@Model.CreatedDate</td>
+                </tr>
+                <tr>
+                    <th>Пол:</th>
+                    <td>
+                        @if (Model.Sex == "Male")
+                        {
+                            <p>Мужчина</p>
+                        }
+                        else
+                        {
+                            <p>Женщина</p>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Адрес:</th>
+                    <td>@Model.Address</td>
+                </tr>
+                <tr>
+                    <th>Телефонный номер:</th>
+                    <td>@Model.Phone</td>
+                </tr>
+                <tr>
+                    <th>E-mail:</th>
+                    <td>@Model.Email</td>
+                </tr>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div>
+            <h2>Доступ запрещен!</h2>
+        </div>
+    }
+}
