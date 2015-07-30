@@ -15,7 +15,6 @@ namespace Web.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Введите стоимость товара")]
-        //[RegularExpression(@"(([0-9]+))[,.]([0-9]*)", ErrorMessage = "Введите число. Маска: '999.99'")]
         public decimal Cost { get; set; }
 
         [Required(ErrorMessage = "Введите количество товара")]
@@ -23,7 +22,7 @@ namespace Web.Models
         public int Count { get; set; }
 
         public bool IsAvailable { get; set; }
-        public bool IsMine { get; set; }
 
+        public bool IsMine { get; set; }
     }
 }

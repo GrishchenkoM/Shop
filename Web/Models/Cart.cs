@@ -6,17 +6,15 @@ namespace Web.Models
 {
     public class Cart
     {
-        private List<CartLine> lineCollection = new List<CartLine>();
-
         public void AddItem(IProduct product, int quantity)
         {
-            CartLine line = lineCollection.FirstOrDefault(x => x.Product.Id == product.Id);
+            var line = _lineCollection.FirstOrDefault(x => x.Product.Id == product.Id);
 
             if (line != null)
                 line.Quantity += quantity;
             else
             {
-                lineCollection.Add(new CartLine
+                _lineCollection.Add(new CartLine
                     {
                         Product = product,
                         Quantity = quantity
@@ -26,34 +24,38 @@ namespace Web.Models
 
         public void RemoveItem(IProduct product)
         {
-            lineCollection.RemoveAll(x => x.Product.Id == product.Id);
+            _lineCollection.RemoveAll(x => x.Product.Id == product.Id);
         }
 
         public decimal ComputeTotalValue()
         {
-            return lineCollection.Sum(x => x.Product.Cost * x.Quantity);
+            return _lineCollection.Sum(x => x.Product.Cost * x.Quantity);
         }
 
         public void Clear()
         {
-            lineCollection.Clear();
+            _lineCollection.Clear();
         }
 
         public IEnumerable<CartLine> Lines
         {
-            get { return lineCollection; }
+            get { return _lineCollection; }
         }
 
         public bool IsEmpty
         {
-            get { return lineCollection.Count == 0; }
+            get { return _lineCollection.Count == 0; }
         }
+
+        private readonly List<CartLine> _lineCollection = new List<CartLine>();
     }
 
     public class CartLine
     {
         public IProduct Product { get; set; }
+
         public int Quantity { get; set; }
+
         public bool IsMine { get; set; }
     }
 
