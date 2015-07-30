@@ -27,15 +27,16 @@ namespace Web.Controllers
         public ActionResult Index(CartViewModel model, FormCollection form)
         {
             var cart = Session["Cart"] as Cart;
-            if (cart == null) return RedirectToAction("Index", "Home");
-            var resultModel = new CartViewModel {Cart = new Cart()};
+            if (cart == null) 
+                return RedirectToAction("Index", "Home");
 
+            var resultModel = new CartViewModel {Cart = new Cart()};
             try
             {
                 if (form.Keys.Count != 0)
                     for (int i = 0; i < form.Keys.Count; ++i)
                     {
-                        string name = form.GetKey(i);
+                        var name = form.GetKey(i);
                         if (name.Contains("delete_all"))
                         {
                             GetCart().Clear();
@@ -52,7 +53,11 @@ namespace Web.Controllers
             }
 
             if (!OrderService(cart, resultModel))
-                return RedirectToAction("Finality", "Error", new {id = 0});
+                return RedirectToAction("Finality", "Error", new
+                    {
+                        action = Auxiliary.Actions.Purchase, 
+                        result = Auxiliary.Result.Error
+                    });
 
             Session["BoughtProducts"] = resultModel;
             Session["Cart"] = null;
@@ -104,9 +109,9 @@ namespace Web.Controllers
 
         private bool OrderService(Cart cart, CartViewModel resultModel)
         {
-            DateTime time = DateTime.Now;
+            var time = DateTime.Now;
 
-            foreach (CartLine item in cart.Lines)
+            foreach (var item in cart.Lines)
             {
                 var product = _dataManager.Products.GetProductById(item.Product.Id);
                 var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomersByProductId(item.Product.Id);

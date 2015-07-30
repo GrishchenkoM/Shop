@@ -4,7 +4,7 @@ using Domain.Entities.Interfaces;
 
 namespace Web.Models
 {
-    public static class Auxiliary
+    public class Auxiliary
     {
         /// <summary>
         /// Read Image file
@@ -30,6 +30,11 @@ namespace Web.Models
         public enum Result
         {
             Error = -1, AdditionSuccess, OperationSuccess
+        }
+
+        public enum Actions
+        {
+            Create, Update, Delete, Purchase
         }
     }
 }

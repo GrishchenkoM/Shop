@@ -34,20 +34,15 @@ namespace Web.Controllers
                 IProduct item = new Product();
                 ReadModel(model, item);
 
-                return Redirect(CreateProduct(model, item));
+                return Redirect(Auxiliary.Actions.Create, CreateProduct(model, item)
+                        ? Auxiliary.Result.OperationSuccess : Auxiliary.Result.Error);
             }
             return View(model);
         }
 
-        public ActionResult Redirect(bool answer)
+        public ActionResult Redirect(Auxiliary.Actions action, Auxiliary.Result r)
         {
-            int result;
-            if (answer)
-                result = (int)Auxiliary.Result.OperationSuccess;
-            else
-                result = (int)Auxiliary.Result.Error;
-
-            return RedirectToAction("Finality", "Error", new { id = result });
+            return RedirectToAction("Finality", "Error", new { reaction = action, result = r });
         }
         
         #endregion

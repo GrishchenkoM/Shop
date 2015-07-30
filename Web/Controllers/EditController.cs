@@ -18,6 +18,11 @@ namespace Web.Controllers
             _dataManager = manager;
         }
 
+        public ActionResult EditMenu()
+        {
+            return View();
+        }
+
         public ActionResult Index(int id)
         {
             int currentProductId = id;
@@ -47,16 +52,16 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Index(CreateProduct model, FormCollection form, HttpPostedFileBase uploadImage)
         {
-            bool answer = false;
-
             if (form.GetKey(form.Keys.Count - 1) == "delete") // if input 'delete' stands always in the end
             {
                 if (_dataManager.Products != null)
-                    answer = DeleteProduct(model);
+                    return Redirect(Auxiliary.Actions.Delete, DeleteProduct(model) 
+                        ? Auxiliary.Result.OperationSuccess : Auxiliary.Result.Error);
             }
             else
             {
-                if (!ModelState.IsValid) return View(model);
+                if (!ModelState.IsValid) 
+                    return View(model);
                 if (_dataManager.Products != null)
                 {
                     var oldProduct = _dataManager.Products.GetProductById(model.Id);
@@ -73,29 +78,18 @@ namespace Web.Controllers
                         item.Image = oldProduct.Image;
 
                     if (_dataManager.Products != null)
-                        answer = UpdateProduct(item, model);
-
-                    if (answer)
-                        answer = _dataManager.ProductsCustomers.UpdateProdCastRelation(item.Id, model.Count);
+                        if (UpdateProduct(item, model))
+                            return Redirect(Auxiliary.Actions.Delete, 
+                                _dataManager.ProductsCustomers.UpdateProdCastRelation(item.Id, model.Count) 
+                                ? Auxiliary.Result.OperationSuccess : Auxiliary.Result.Error);
                 }
             }
-            return Redirect(answer);
+            return View(model);
         }
 
-        public ActionResult Redirect(bool answer)
+        public ActionResult Redirect(Auxiliary.Actions action, Auxiliary.Result r)
         {
-            int result;
-            if (answer)
-                result = (int)Auxiliary.Result.OperationSuccess;
-            else
-                result = (int)Auxiliary.Result.Error;
-
-            return RedirectToAction("Finality", "Error", new { id = result });
-        }
-        
-        public ActionResult EditMenu()
-        {
-            return View();
+            return RedirectToAction("Finality", "Error", new { reaction = action , result = r });
         }
         
         #endregion
