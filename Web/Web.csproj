@@ -79,10 +79,10 @@
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\PurchaseController.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Auxiliary.cs" />
     <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\CartViewModel.cs" />
     <Compile Include="Models\CustomerViewModel.cs" />
@@ -316,7 +316,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>16690</DevelopmentServerPort>
+          <DevelopmentServerPort>43852</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
