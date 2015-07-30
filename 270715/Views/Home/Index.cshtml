@@ -27,7 +27,11 @@
 
 @section EditOrBuy
 {
-    @if (Model.CustomerId != -1)
+    @if (Session["Cart"] != null)
+    {
+        @Html.ActionLink("Корзина", "Index", "Cart")
+    }
+    else if (Model.CustomerId != -1)
     {
         @Html.ActionLink("Редактировать", "EditMenu", "Edit")
     }
@@ -71,7 +75,7 @@
                                             </td>
                                             <td id="col2">
                                                 <h1>@Html.ActionLink(Model.Products[i].Name,
-                                                                     "Index", "Purchase", new {id = Model.Products[i].Id}, null)
+                                                                     "Index", "Purchase", new { id = Model.Products[i].Id }, null)
                                                 </h1>
                                                 <br/>
                                                 <div class="product-info" style="position: inherit;">
@@ -124,7 +128,7 @@
             </div>
             @* End Content Slider *@
 			
-            @* Products *@
+            @* Popular Products *@
             <div class="products">
                 
                 <div class="cl">&nbsp;</div>
@@ -149,7 +153,7 @@
                                     }
                                     <div class="product-desc">
                                         <p>
-                                            @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new {id = Model.PopularProducts[i].Id}, null)
+                                            @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new { id = Model.PopularProducts[i].Id }, null)
                                         </p>
                                         @if (Model.PopularProducts[i].IsAvailable)
                                         {
@@ -181,7 +185,7 @@
                                 <div class="product-info">
                                     <h3>ПОПУЛЯРНЫЙ!</h3>
                                     <div class="product-desc">
-                                        <p>@Html.ActionLink(Model.PopularProducts[2].Name, "Index", "Purchase", new {id = Model.PopularProducts[2].Id}, null)
+                                        <p>@Html.ActionLink(Model.PopularProducts[2].Name, "Index", "Purchase", new { id = Model.PopularProducts[2].Id }, null)
                                         </p>
                                         @if (Model.PopularProducts[2].IsAvailable)
                                         {
@@ -233,7 +237,7 @@
                         <br/>
                         <div id="loadingElement" style="display: none; color: red; float: left">ЗАГРУЗКА...</div>
                         <div id = "foundList">
-                            @Html.Action("GetFoundProducts", new {searchString = ViewBag.SearchString})
+                            @Html.Action("GetFoundProducts", new { searchString = ViewBag.SearchString })
                         </div>
                     }
                 </div>
@@ -264,12 +268,12 @@
                     <div class="products_all">
                         <ul>
                             @{
-                                int count = Model.PopularProducts.Count;
-                                int currentIndex = 3;
-                                while (currentIndex != count)
-                                {
-                                    for (int i = 0; i < 3; ++i)
-                                    {
+                int count = Model.PopularProducts.Count;
+                int currentIndex = 3;
+                while (currentIndex != count)
+                {
+                    for (int i = 0; i < 3; ++i)
+                    {
                                         <li>
                                             <p><a href="/Purchase/Index/@Model.PopularProducts[currentIndex].Id">
                                                    @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
@@ -278,7 +282,7 @@
                                             <div class="product-info">
                                                 <div id="product-desc-other">
                                                     <p>
-                                                        @Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new {id = Model.PopularProducts[currentIndex].Id}, null)
+                                                        @Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new { id = Model.PopularProducts[currentIndex].Id }, null)
                                                     </p>
                                                     @if (Model.PopularProducts[currentIndex].IsAvailable)
                                                     {
@@ -299,17 +303,17 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        ++currentIndex;
-                                        if (currentIndex == count)
-                                        {
-                                            break;
-                                        }
-                                    }
+                                                    ++currentIndex;
+                                                    if (currentIndex == count)
+                                                    {
+                                                        break;
+                                                    }
+                    }
 
-                                    if (currentIndex == count)
-                                    {
-                                        break;
-                                    }
+                    if (currentIndex == count)
+                    {
+                        break;
+                    }
 
                                     <li class="last">
                                         <p><a href="/Purchase/Index/@Model.PopularProducts[currentIndex].Id">
@@ -318,19 +322,19 @@
                                         </p>
                                         <div class="product-info">
                                             <div class="product-desc">
-                                                <p>@Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new {id = Model.PopularProducts[currentIndex].Id}, null);
+                                                <p>@Html.ActionLink(Model.PopularProducts[currentIndex].Name, "Index", "Purchase", new { id = Model.PopularProducts[currentIndex].Id }, null);
                                                 </p>
                                                 @if (Model.PopularProducts[currentIndex].IsAvailable)
-                                                    {
+                                                {
                                                         <div class="instock">
                                                             <img src="../../Content/css/images/cheked_green.png" alt=""/>
                                                             Есть в наличии
                                                         </div>
-                                                    }
-                                                    else
-                                                    {
+                                                }
+                                                else
+                                                {
                                                         <strong>Нет на складе</strong>
-                                                    }
+                                                }
                                                     <br/>
                                                 <h4>@Model.PopularProducts[currentIndex].Description.Substring(0,
                                                                                                                (Model.PopularProducts[currentIndex].Description.Length - 1 < 28)
@@ -339,8 +343,8 @@
                                             </div>
                                         </div>
                                     </li>
-                                    ++currentIndex;
-                                }
+                                                ++currentIndex;
+                }
                             }
                         </ul>
                     </div>
@@ -352,8 +356,8 @@
                     <div class="products_all">
                         <ul>
                             @{
-                                for (int i = 0; i < Model.PopularProducts.Count; ++i)
-                                {
+                for (int i = 0; i < Model.PopularProducts.Count; ++i)
+                {
                                     <li>
                                         <p><a href="/Purchase/Index/@Model.PopularProducts[i].Id">
                                                @Html.Raw("<img style='width:190px; height:190px;' src=\"data:image/jpeg;base64,"
@@ -362,7 +366,7 @@
                                         <div class="product-info">
                                             <div id="product-desc-other">
                                                 <p>
-                                                    @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new {id = Model.PopularProducts[i].Id}, null)
+                                                    @Html.ActionLink(Model.PopularProducts[i].Name, "Index", "Purchase", new { id = Model.PopularProducts[i].Id }, null)
                                                 </p>
                                                 @if (Model.PopularProducts[i].IsAvailable)
                                                 {
@@ -383,7 +387,7 @@
                                             </div>
                                         </div>
                                     </li>
-                                }
+                }
                             }
                         </ul>
                     </div>
@@ -413,7 +417,7 @@
                                     <p>@Html.ActionLink(product.Name.Substring(0,
                                                                                (product.Name.Length - 1 < 20)
                                                                                    ? product.Name.Length - 1 : 20),
-                                                        "Index", "Purchase", new {id = product.Id}, null)
+                                                        "Index", "Purchase", new { id = product.Id }, null)
                                     </p>
                                 </div>
 			                     

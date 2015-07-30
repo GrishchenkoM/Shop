@@ -1,5 +1,12 @@
 ﻿@{
-    ViewBag.Title = ViewBag.Message;
+    if (((string)ViewBag.Message).Contains("Готово"))
+    {
+        ViewBag.Title = "Выполнено!";
+    }
+    else
+    {
+        ViewBag.Title = "Не выролнено!";
+    }
 }
 
 
@@ -8,21 +15,8 @@
         <div class="links-content">
             <fieldset>
             <br/>
-            <h2>@ViewBag.Title</h2>
+            <h1>@ViewBag.Message</h1>
             <br/>
-        
-            @if (ViewBag.Message == "Товар добавлен!")
-            {
-                <p>Поздравляем! Вы добавили в магазин свой товар!</p>
-            }
-            else if (ViewBag.Message == "Готово!")
-            {
-                <p>Операция прошла успешно!</p>
-            }
-            else
-            {
-                <p>Сожалеем, но при добавлении товара произошел сбой. Попробуйте еще раз.</p>
-            }
             <br/>
             <p>Для добавления товара перейдите на страницу <q>@Html.ActionLink("Создать", "Index", "Create")</q>.</p>
             <br/>

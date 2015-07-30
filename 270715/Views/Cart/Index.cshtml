@@ -1,86 +1,66 @@
 ﻿@using Web.Models
 @model CartViewModel
-@{ ViewBag.Title = "Корзина";}
+@{
+    ViewBag.Title = "Корзина";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    var ajax = new AjaxOptions
+        {
+            UpdateTargetId = "cartList",
+            Url = Url.Action("ProductsList"),
+            LoadingElementId = "loadingElement"
+        };
+}
 
 @section Context{
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
     <div class="box-content">
         <div style="clear: both; height: 10px"></div>
         <div class="box">
             @if (Model != null)
             {
                 <div class="box-content">
+                    @using (Ajax.BeginForm(ajax))
+                    {
+                        <div id = "cartList">
+                            @Html.Action("ProductsList", new {model = Model})
+                        </div>
+                        <br />
+                        <div id="loadingElement" style="display: none; color: red;">ОБНОВЛЕНИЕ...</div>
+                    }
                     @using (Html.BeginForm())
                     {
-                        foreach (var item in Model.Cart.Lines)
+                        if (ViewBag.CartIsEmpty != null && ViewBag.CartIsEmpty)
                         {
-
-                            <fieldset>
-                                <div class="items">
-                                    <div class ="product-name">
-                                        <p>@item.Product.Name</p>
-                                    </div>
-                                    <div style="clear: both; height: 20px"></div>
-                                    <ul>
-                                        <div id="product-image">
-                                            @if (item.Product.Image != null)
-                                            {
-                                                @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
-                                                          + Convert.ToBase64String(item.Product.Image) + "\" />")
-                                            }
-                                            else
-                                            {
-                                                @Html.Label("Фото отсутствует")
-                                            }
-                                        </div>
-                                        <div style="height: 10px"></div>
-                                        
-                                        @if (item.IsMine)
-                                        {
-                                            <div style="font-size: inherit; color: red; font-style: oblique;">
-                                                Это Ваш товар! Вы покупаете данный товар у самого себя!
-                                            </div>
-                                            <br/>
-                                        }
-                                    </ul>
-                                    <div class ="product-name">
-                                        @item.Product.Cost.ToString("### ###,## грн'.'")
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <p>Количество:
-                                            <strong>@item.Quantity</strong>
-                                        </p>
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <p>Общая стоимость: @((item.Product.Cost * item.Quantity).ToString("### ###,## грн'.'"))</p>
-                                    </div>
-                                </div>
-                            </fieldset>
-                            <br/>
+                            <div style="color: red;">
+                                <strong>Корзина пуста!</strong>
+                            </div>
                         }
+                        else
+                        {
+                            <div class="search-button">
+                                <input type="submit"  value="Очистить корзину" name="delete_all" />
+                            </div>
+                            <br/>
+                            <fieldset style="border-radius: 10px;">
+                                <table class="my-simple-table" style="margin: auto;">
+                                    <tr>
+                                        <th>Сумма к оплате:</th>
+                                        <td>@(Model.Cart.ComputeTotalValue().ToString("### ###,## грн'.'"))</td>
+                                    </tr>
+                                </table>
+                            </fieldset>
 
-
-                        <br/>
-                        <fieldset style="border-radius: 10px;">
-                            <table class="my-simple-table" style="margin: auto; ">
-                                <tr>
-                                    <th>Сумма к оплате:</th>
-                                    <td>@(Model.Cart.ComputeTotalValue().ToString("### ###,## грн'.'"))</td>
-                                </tr>
-                            </table>
-                        </fieldset>
-
-                        <br/>
-                        <div class="search-button">
-                            <input type="submit"  value="Купить" name="save" />
-                        </div>
+                            <br/>
+                            <div class="search-button">
+                                <input type="submit"  value="Купить" name="byu" />
+                            </div>
+                        }
                     }
                 </div>
             }
             else
             {
-                <span>Ошибка! Корзина пуста!</span>
+                <span>Корзина пуста!</span>
             }
 
  </div>
