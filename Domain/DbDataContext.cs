@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.SqlClient;
 using Domain.Entities;
-using Domain.Entities.Interfaces;
 
 namespace Domain
 {
@@ -29,10 +25,12 @@ namespace Domain
             get { return Db.ConnectionString; }
         }
 
-        private IEnumerable<IProduct> _products;
         public IEnumerable<Customer> Customers { get; set; }
+
         public IEnumerable<Order> Orders { get; set; }
+
         public IEnumerable<Product> Products { get; set; }
+
         public IEnumerable<ProductsCustomers> ProductsCustomerses { get; set; }
     }
 }
