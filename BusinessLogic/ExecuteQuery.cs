@@ -10,40 +10,10 @@ namespace BusinessLogic
 {
     public class ExecuteQuery
     {
-
-        public static ICustomer GetCustomer(DbDataContext context, string query)
+        public static IEnumerable<ICustomer> GetCustomers(DbDataContext context, string query = null)
         {
-            using (var connection = new SqlConnection(context.ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
-                    ICustomer customer = null;
-                    if (reader.Read())
-                    {
-                        customer = new Customer
-                            {
-                                FirstName = reader.GetString(1),
-                                LastName = reader.GetString(2),
-                                UserName = reader.GetString(3),
-                                Password = reader.GetString(4),
-                                Email = reader.GetString(5)
-                            };
-                        if (reader.GetValue(6) != DBNull.Value)
-                            customer.CreatedDate = (DateTime) reader.GetValue(6);
-                        customer.Address = reader.GetValue(7) != DBNull.Value ? reader.GetString(7) : "";
-                        customer.Sex = reader.GetValue(8) != DBNull.Value ? reader.GetString(8) : "";
-                        customer.Phone = reader.GetValue(9) != DBNull.Value ? reader.GetString(9) : "";
-                    }
-                    return customer;
-                }
-            }
-        }
-
-        public static IEnumerable<ICustomer> GetCustomers(DbDataContext context, string query)
-        {
+            if (query == null) query = "select * from Customers";
+            
             List<ICustomer> customers = null;
             using (var connection = new SqlConnection(context.ConnectionString))
             {
@@ -51,7 +21,7 @@ namespace BusinessLogic
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                     while (reader.Read())
                     {
                         if (customers == null) customers = new List<ICustomer>();
@@ -74,15 +44,17 @@ namespace BusinessLogic
             return customers;
         }
 
-        public static IEnumerable<IProduct> GetProducts(DbDataContext context, string query)
+        public static IEnumerable<IProduct> GetProducts(DbDataContext context, string query = null)
         {
+            if (query == null) query = "select * from Products";
+
             using (var connection = new SqlConnection(context.ConnectionString))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                     List<IProduct> products = null;
                     while (reader.Read())
                     {
@@ -105,15 +77,17 @@ namespace BusinessLogic
             }
         }
 
-        public static IEnumerable<IOrder> GetOrder(DbDataContext context, string query)
+        public static IEnumerable<IOrder> GetOrders(DbDataContext context, string query = null)
         {
+            if (query == null) query = "select * from Orders";
+
             using (var connection = new SqlConnection(context.ConnectionString))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                     List<IOrder> orders = null; 
                     while (reader.Read())
                     {
@@ -132,15 +106,17 @@ namespace BusinessLogic
             }
         }
 
-        public static IEnumerable<IProductsCustomers> GetProductsCustomers(DbDataContext context, string query)
+        public static IEnumerable<IProductsCustomers> GetProductsCustomers(DbDataContext context, string query = null)
         {
+            if (query == null) query = "select * from ProductsCustomers";
+
             using (var connection = new SqlConnection(context.ConnectionString))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection);
+                    var reader = command.ExecuteReader(CommandBehavior.CloseConnection);
                     var productsCustomersList = new List<IProductsCustomers>();
                     while(reader.Read())
                     {
@@ -177,8 +153,12 @@ namespace BusinessLogic
                                 command.Parameters.Add(parameter);
                     }
                             
-                    if (command.ExecuteNonQuery() == -1) return -1;
-                    if (query.Contains("DELETE")) return 1;
+                    if (command.ExecuteNonQuery() == -1) 
+                        return (int)Result.Error;
+
+                    if (query.Contains("DELETE")) 
+                        return (int)Result.OperationSuccess;
+
                     command.CommandText = "SELECT @@IDENTITY";
                     try
                     {
@@ -186,7 +166,7 @@ namespace BusinessLogic
                     }
                     catch (Exception)
                     {
-                        return 1;
+                        return (int)Result.OperationSuccess;
                     }
                 }
             }
@@ -202,6 +182,10 @@ namespace BusinessLogic
             };
             parameters.Add(parameter);
         }
-        
+    }
+
+    public enum Result
+    {
+        Error = -1, AdditionSuccess, OperationSuccess
     }
 }

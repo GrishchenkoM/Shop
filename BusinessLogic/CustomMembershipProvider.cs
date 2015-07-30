@@ -15,7 +15,7 @@ namespace BusinessLogic
             if (CustomerRepository.GetCustomerByEmail(email) != null)
                 return MembershipCreateStatus.DuplicateEmail;
 
-            MembershipUser user = CustomerRepository.GetMembershipCustomerByName(userName);
+            var user = CustomerRepository.GetMembershipCustomerByName(userName);
             if (user != null)
                 return MembershipCreateStatus.DuplicateUserName;
 

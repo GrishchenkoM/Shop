@@ -6,15 +6,22 @@ namespace BusinessLogic.Repositories.Interfaces
 {
     public interface ICustomerRepository
     {
-        ICustomer GetCustomerById(int customerId);
-        //IEnumerable<ICustomer> GetCustomersByProduct(int productId);
         IEnumerable<ICustomer> GetCustomers();
+
+        ICustomer GetCustomerById(int customerId);
+        
         ICustomer GetCustomerByName(string userName);
-        void CreateCustomer(string userName, string password, string firstName, string lastName, string email);
-        bool ValidateCustomer(string userName, string password);
-        void SaveCustomer(ICustomer customer);
-        MembershipUser GetMembershipCustomerByName(string userName);
+        
         ICustomer GetCustomerByEmail(string email);
+
+        void CreateCustomer(string userName, string password, string firstName, string lastName, string email);
+        
+        void SaveCustomer(ICustomer customer);
+        
         int UpdateCustomer(ICustomer customer);
+
+        bool ValidateCustomer(string userName, string password);
+        
+        MembershipUser GetMembershipCustomerByName(string userName);
     }
 }

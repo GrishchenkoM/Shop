@@ -10,6 +10,8 @@ namespace BusinessLogic.Repositories.Implementations
 {
     public class ProductRepository : IProductRepository
     {
+        #region public
+
         public ProductRepository(DbDataContext dbDataContext)
         {
             _context = dbDataContext;
@@ -17,8 +19,7 @@ namespace BusinessLogic.Repositories.Implementations
 
         public IEnumerable<IProduct> GetProducts()
         {
-            const string query = @"select * from Products";
-            return ExecuteQuery.GetProducts(_context, query);
+            return ExecuteQuery.GetProducts(_context);
         }
 
         public IEnumerable<IProduct> GetPopularProducts()
@@ -32,12 +33,18 @@ namespace BusinessLogic.Repositories.Implementations
 
         public IProduct GetProductById(int productId)
         {
-            return _context.Products.FirstOrDefault(x => x.Id == productId);
+            return GetProducts().FirstOrDefault(x => x.Id == productId);
+        }
+
+        public IEnumerable<IProduct> GetProductsByName(string name)
+        {
+            return GetProducts().Where(
+                    x => x.Name.ToLowerInvariant().Contains(name.ToLowerInvariant()));
         }
 
         public IEnumerable<IProduct> GetAvailableProducts()
         {
-            return _context.Products.Where(x => x.IsAvailable);
+            return GetProducts().Where(x => x.IsAvailable);
         }
 
         public int AddProduct(IProduct product)
@@ -45,7 +52,6 @@ namespace BusinessLogic.Repositories.Implementations
             const string query = "INSERT INTO Products " +
                                  "(Name, IsAvailable, Cost, Image, Description) " +
                                  "VALUES (@name, @IsAvailable, @cost, @image, @description)";
-            
             var parameters = new List<SqlParameter>();
 
             ExecuteQuery.AddParameter(parameters, "@name", product.Name, SqlDbType.NVarChar);
@@ -62,7 +68,6 @@ namespace BusinessLogic.Repositories.Implementations
             const string query = "UPDATE Products " +
                                  "SET Name = @name, IsAvailable = @IsAvailable, Cost = @cost, Image = @image, Description = @description " +
                                  "WHERE Products.Id = @id";
-            
             var parameters = new List<SqlParameter>();
 
             ExecuteQuery.AddParameter(parameters, "@name", item.Name, SqlDbType.NVarChar);
@@ -78,15 +83,19 @@ namespace BusinessLogic.Repositories.Implementations
         public bool DeleteProduct(int id)
         {
             const string query = "DELETE FROM Products WHERE Products.Id = @id";
-
             var parameters = new List<SqlParameter>();
+
             ExecuteQuery.AddParameter(parameters, "@id", id, SqlDbType.Int);
 
-            if (ExecuteQuery.Execute(_context, query, parameters) == -1)
-                return false;
-            return true;
+            return ExecuteQuery.Execute(_context, query, parameters) != (int)Result.Error;
         }
+        
+        #endregion
+
+        #region private
 
         private readonly DbDataContext _context;
+
+        #endregion
     }
 }

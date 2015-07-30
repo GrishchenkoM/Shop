@@ -6,10 +6,14 @@ namespace BusinessLogic.Repositories.Interfaces
     public interface IProductRepository
     {
         IEnumerable<IProduct> GetProducts();
+
         IEnumerable<IProduct> GetPopularProducts();
-        IProduct GetProductById(int productId);
-        //IEnumerable<IProduct> GetProductsByCustomer(int customerId);
+        
+        IEnumerable<IProduct> GetProductsByName(string name);
+
         IEnumerable<IProduct> GetAvailableProducts();
+        
+        IProduct GetProductById(int productId);
 
         int AddProduct(IProduct product);
 

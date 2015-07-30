@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Security;
 using BusinessLogic.Repositories.Interfaces;
 using Domain;
@@ -12,6 +13,8 @@ namespace BusinessLogic.Repositories.Implementations
 {
     public class CustomerRepository : ICustomerRepository
     {
+        #region public
+
         public CustomerRepository(DbDataContext dbDataContext)
         {
             _context = dbDataContext;
@@ -19,8 +22,22 @@ namespace BusinessLogic.Repositories.Implementations
         
         public IEnumerable<ICustomer> GetCustomers()
         {
-            const string query = "select * from Customers";
-            return ExecuteQuery.GetCustomers(_context, query);
+            return ExecuteQuery.GetCustomers(_context);
+        }
+        
+        public ICustomer GetCustomerByEmail(string email)
+        {
+            return GetCustomers().FirstOrDefault(x=>x.Email == email);
+        }
+
+        public ICustomer GetCustomerByName(string userName)
+        {
+            return GetCustomers().FirstOrDefault(x=>x.UserName == userName);
+        }
+
+        public ICustomer GetCustomerById(int id)
+        {
+            return GetCustomers().FirstOrDefault(x=>x.Id == id);
         }
         
         public void CreateCustomer(string userName, string password, string firstName, string lastName, string email)
@@ -41,35 +58,27 @@ namespace BusinessLogic.Repositories.Implementations
 
             SaveCustomer(customer);
         }
-        public bool ValidateCustomer(string userName, string password)
-        {
-            if (_context != null)
-            {
-                //var customer = _context.Customers.FirstOrDefault(x => x.UserName == userName);
-                var customer = GetCustomerByName(userName);
-                if (customer != null && customer.Password == password) return true;
-            }
-            return false;
-        }
+        
         public void SaveCustomer(ICustomer customer)
         {
-            using (var connection = new SqlConnection(_context.ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "INSERT INTO Customers" +
-                                          "(FirstName, LastName, UserName, Password, Email, CreatedDate, Address, Sex, Phone)" +
-                                          "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', CAST('{5}' AS datetime2), '{6}', '{7}', '{8}')";
-                    command.CommandText = string.Format(command.CommandText,
-                        customer.FirstName, customer.LastName, customer.UserName, customer.Password,
-                        customer.Email, customer.CreatedDate, customer.Address, customer.Sex, customer.Phone);
+            const string query = "INSERT INTO Customers" +
+                                 "(FirstName, LastName, UserName, Password, Email, CreatedDate, Address, Sex, Phone)" +
+                                 "VALUES (@firstName, @lastName, @userName, @password, @email, @createdDate, @address, @sex, @phone)";
+            var parameters = new List<SqlParameter>();
 
-                    command.ExecuteNonQuery();
-                }
-            }
+            ExecuteQuery.AddParameter(parameters, "@firstName", customer.FirstName, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@lastName", customer.LastName, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@userName", customer.UserName, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@password", customer.Password, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@email", customer.Email, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@createdDate", customer.CreatedDate, SqlDbType.DateTime2);
+            ExecuteQuery.AddParameter(parameters, "@address", customer.Address, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@sex", customer.Sex, SqlDbType.NVarChar);
+            ExecuteQuery.AddParameter(parameters, "@phone", customer.Phone, SqlDbType.NVarChar);
 
+            ExecuteQuery.Execute(_context, query, parameters);
         }
+
         public int UpdateCustomer(ICustomer customer)
         {
             const string query = "UPDATE Customers " +
@@ -86,13 +95,23 @@ namespace BusinessLogic.Repositories.Implementations
             ExecuteQuery.AddParameter(parameters, "@phone", customer.Phone, SqlDbType.NVarChar);
             ExecuteQuery.AddParameter(parameters, "@id", customer.Id, SqlDbType.Int);
             
-
             return ExecuteQuery.Execute(_context, query, parameters);
         }
+        
+        public bool ValidateCustomer(string userName, string password)
+        {
+            if (_context != null)
+            {
+                var customer = GetCustomerByName(userName);
+                if (customer != null && customer.Password == password) 
+                    return true;
+            }
+            return false;
+        }
+
         public MembershipUser GetMembershipCustomerByName(string userName)
         {
-            //var customer = _context.Customers.FirstOrDefault(x => x.UserName == userName);
-            ICustomer customer = GetCustomerByName(userName);
+            var customer = GetCustomerByName(userName);
             if (customer != null)
                 return new MembershipUser(
                     "CustomMembershipProvider",
@@ -111,66 +130,14 @@ namespace BusinessLogic.Repositories.Implementations
                     );
             return null;
         }
-
-        public ICustomer GetCustomerByEmail(string email)
-        {
-            //return _context.Customers.FirstOrDefault(x => x.Email == email);
-
-            string query = @"select * from Customers where Email = '{0}'";
-            query = string.Format(query, email);
-
-            return GetCustomer(query);
-        }
-        public ICustomer GetCustomerByName(string userName)
-        {
-            //return _context.Customers.FirstOrDefault(x => x.UserName == userName);
-
-            string query = @"select * from Customers where UserName = '{0}'";
-            query = string.Format(query, userName);
-
-            return ExecuteQuery.GetCustomer(_context, query);
-        }
-        public ICustomer GetCustomerById(int customerId)
-        {
-            //return _context.Customers.FirstOrDefault(x => x.Id == customerId);
-
-            string query = @"select * from Customers where Id = '{0}'";
-            query = string.Format(query, customerId);
-
-            return GetCustomer(query);
-        }
-        private ICustomer GetCustomer(string query)
-        {
-            using (var connection = new SqlConnection(_context.ConnectionString))
-            {
-                connection.Open();
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = query;
-                    SqlDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
-                    ICustomer customer = null;
-                    if (reader.Read())
-                    {
-                        customer = new Customer();
-                        customer.FirstName = reader.GetString(1);
-                        customer.LastName = reader.GetString(2);
-                        customer.UserName = reader.GetString(3);
-                        customer.Password = reader.GetString(4);
-                        customer.Email = reader.GetString(5);
-                        if (reader.GetValue(6) != DBNull.Value)
-                            customer.CreatedDate = (DateTime)reader.GetValue(6);
-                        customer.Address = reader.GetValue(7) != DBNull.Value ? reader.GetString(7) : "";
-                        customer.Sex = reader.GetValue(8) != DBNull.Value ? reader.GetString(8) : "";
-                        customer.Phone = reader.GetValue(9) != DBNull.Value ? reader.GetString(9) : "";
-                    }
-                    return customer;
-                }
-            }
-        }
         
+        #endregion
 
+        #region private
 
         private readonly DbDataContext _context;
+
+        #endregion
     }
 }
 

@@ -5,10 +5,9 @@ namespace BusinessLogic.Repositories.Interfaces
 {
     public interface IProductsCustomersRepository
     {
-        IProductsCustomers GetProductsCustomersById(int productsCustomersId);
-        ICustomer GetCustomerByProduct(int productId);
-        IEnumerable<IProduct> GetProductsByCustomer(int customerId);
         IEnumerable<IProductsCustomers> GetProductsCustomers();
+        
+        IProductsCustomers GetProductsCustomersByProductId(int id);
 
         bool AddProdCustRelation(int userId, int currentProductId, int count);
 
