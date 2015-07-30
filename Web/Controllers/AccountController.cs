@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using BusinessLogic;
@@ -57,13 +56,11 @@ namespace Web.Controllers
             {
                 if (_dataManager.Provider.ValidateUser(model.UserName, model.Password))
                 {
-                    var customer = _dataManager.Customers.GetCustomers()
-                                                .FirstOrDefault(x => x.UserName == model.UserName);
-                    int tempId = -1;
+                    var customer = _dataManager.Customers.GetCustomerByName(model.UserName);
+                    var tempId = -1;
                     if (customer != null)
                         tempId = customer.Id;
                     FormsAuthentication.SetAuthCookie(model.UserName, false);
-
                     Session["UserId"] = tempId;
                     
                     if (Session["CurrentProductId"] != null)
@@ -89,7 +86,7 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                MembershipCreateStatus status = _dataManager
+                var status = _dataManager
                     .Provider.CreateUser(
                         model.UserName,
                         model.Password,

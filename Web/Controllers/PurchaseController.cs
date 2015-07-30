@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using BusinessLogic;
 using Domain.Entities.Interfaces;
@@ -11,6 +9,8 @@ namespace Web.Controllers
     [HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class PurchaseController : Controller
     {
+        #region public
+
         public PurchaseController(DataManager manager)
         {
             _dataManager = manager;
@@ -18,30 +18,19 @@ namespace Web.Controllers
 
         public ActionResult Index(int id = -1)
         {
-            int currentId = id;
+            var currentId = id;
             if (Session["UserId"] != null && (int)Session["UserId"] == -1)
                 return RedirectToAction("LogIn", "Account", new { id = currentId });
 
-            var product = _dataManager.Products.GetProducts().FirstOrDefault(x => x.Id == id);
-            if (product == null) return RedirectToAction("Pity", "Error");
+            var product = _dataManager.Products.GetProductById(id);
+            if (product == null) 
+                return RedirectToAction("Pity", "Error");
 
-            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
-                .FirstOrDefault(x => x.ProductId == product.Id);
+            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomersByProductId(product.Id);
 
-            Session.Add("CurrentProductId", product.Id);
-            var model = new CreateProduct
-                {
-                    Name = product.Name,
-                    Image = product.Image,
-                    Cost = product.Cost,
-                    Description = product.Description,
-                    IsAvailable = product.IsAvailable,
-                    IsMine = productsCustomers.CustomerId == (int)Session["UserId"]
-                };
-            if (Session["CreateProductModel"] == null)
-                Session.Add("CreateProductModel", model);
-            else
-                Session["CreateProductModel"] = model;
+            Session["CurrentProductId"] = product.Id;
+            CreateProduct model;
+            FillModel(product, productsCustomers, out model);
             return View(model);
         }
         
@@ -57,15 +46,12 @@ namespace Web.Controllers
                 return View(model);
             }
 
-            var product = _dataManager.Products.GetProducts()
-                                                .FirstOrDefault(x => x.Id == (int) Session["CurrentProductId"]);
-            
-            if (product == null) return RedirectToAction("Pity", "Error");
+            var product = _dataManager.Products.GetProductById((int)Session["CurrentProductId"]);
+            if (product == null) 
+                return RedirectToAction("Pity", "Error");
 
-            // add to cart
-            GetCart().AddItem(product, model.Count);
-            Session["Cart"] = GetCart();
-            
+            AddToCart(model, product);
+
             ViewBag.IsAddToCart = true;
             return View(Session["CreateProductModel"]);
         }
@@ -74,6 +60,30 @@ namespace Web.Controllers
         {
             ViewBag.IsAddToCart = null;
             return View(Session["CreateProductModel"]);
+        }
+        
+        #endregion
+
+        #region private
+
+        private void FillModel(IProduct product, IProductsCustomers productsCustomers, out CreateProduct model)
+        {
+            model = new CreateProduct
+                {
+                    Name = product.Name,
+                    Image = product.Image,
+                    Cost = product.Cost,
+                    Description = product.Description,
+                    IsAvailable = product.IsAvailable,
+                    IsMine = productsCustomers.CustomerId == (int) Session["UserId"]
+                };
+            Session["CreateProductModel"] = model;
+        }
+
+        private void AddToCart(CreateProduct model, IProduct product)
+        {
+            GetCart().AddItem(product, model.Count);
+            Session["Cart"] = GetCart();
         }
         
         private Cart GetCart()
@@ -88,5 +98,7 @@ namespace Web.Controllers
         }
 
         private readonly DataManager _dataManager;
+        
+        #endregion
     }
 }

@@ -22,15 +22,16 @@ namespace Web.Controllers
         {
             if (Session["UserId"] == null)
                 return RedirectToAction("LogIn", "Account");
-            var model = new LogViewModel {CustomerId = (int) Session["UserId"]};
 
+            var model = new LogViewModel {CustomerId = (int) Session["UserId"]};
             IEnumerable<IOrder> orders;
             IEnumerable<IProduct> products;
             IEnumerable<IProductsCustomers> productsCustomers;
             IEnumerable<ICustomer> cutomers;
             GetAllDataFromDb(out orders, out products, out productsCustomers, out cutomers);
 
-            if (orders == null || products == null || productsCustomers == null) return View(model);
+            if (orders == null || products == null || productsCustomers == null) 
+                return View(model);
 
             IEnumerable<IProduct> myProducts;
             List<IOrder> mySoldOrders, myBoughtOrders;
@@ -43,29 +44,21 @@ namespace Web.Controllers
                       boughtCustomers, myBoughtOrders, productsCustomers, myProducts);
 
             Session.Add("Log", model);
-
             return View(model);
         }
         
         public ActionResult Submit(int id = 0)
         {
-            //System.Collections.Specialized.NameValueCollection s = Request.Form;
-            //List<string> str = new List<string>();
-            //foreach (var it in s)
-            //{
-            //    str.Add(it.ToString());
-            //}
-            //string submitName = Request.Form.ToString();
             var model = (LogViewModel) Session["Log"];
-            if (model == null) return View();
+
+            if (model == null)
+                return RedirectToAction("Index", "Log");
 
             if (Request.Form.ToString().Contains("ClearBoughtItems"))
                 foreach (var item in model.ItemsBought)
-                    //_dataManager.Orders.DeleteOrder(model.CustomerId, item.ProductId, item.OrderDate);
                     _dataManager.Orders.DeleteOrder(item.ProductId, item.OrderDate);
             else
                 foreach (var item in model.ItemsSold)
-                    //_dataManager.Orders.DeleteOrder(model.CustomerId, item.ProductId, item.OrderDate);
                     _dataManager.Orders.DeleteOrder(item.ProductId, item.OrderDate);
 
             return RedirectToAction("Index");
@@ -132,28 +125,27 @@ namespace Web.Controllers
                                        OrderDate = order.OrderDateTime
                                    }).Distinct().OrderByDescending(x => x.OrderDate).ToList();
 
-            model.ItemsBought = (
-                                    from product in boughtProducts
-                                    from customer in boughtCustomers
-                                    from order in myBoughtOrders
-                                    from productCustomer in productsCustomers
-                                    where ((order.ProductId == productCustomer.ProductId)
-                                           && (customer.Id == productCustomer.CustomerId)
-                                           && (order.ProductId == product.Id))
-                                    orderby order.OrderDateTime descending
-                                    select new LogItem
-                                        {
-                                            ProductId = product.Id,
-                                            ProductName = product.Name,
-                                            ProductImage = product.Image,
-                                            CustomerId = customer.Id,
-                                            CustomerName = customer.UserName,
-                                            Count = order.Count,
-                                            OrderDate = order.OrderDateTime,
-                                            IsMine = myProducts.FirstOrDefault(x => x.Id == product.Id) != null
-                                        }).Distinct().ToList();
+            model.ItemsBought = (from product in boughtProducts
+                                 from customer in boughtCustomers
+                                 from order in myBoughtOrders
+                                 from productCustomer in productsCustomers
+                                 where ((order.ProductId == productCustomer.ProductId)
+                                        && (customer.Id == productCustomer.CustomerId)
+                                        && (order.ProductId == product.Id))
+                                 orderby order.OrderDateTime descending
+                                 select new LogItem
+                                 {
+                                     ProductId = product.Id,
+                                     ProductName = product.Name,
+                                     ProductImage = product.Image,
+                                     CustomerId = customer.Id,
+                                     CustomerName = customer.UserName,
+                                     Count = order.Count,
+                                     OrderDate = order.OrderDateTime,
+                                     IsMine = myProducts.FirstOrDefault(x => x.Id == product.Id) != null
+                                 }).Distinct().ToList();
 
-            int approximateAmount = soldProducts.Sum(x => Convert.ToInt32(x.Cost));
+            var approximateAmount = soldProducts.Sum(x => Convert.ToInt32(x.Cost));
 
             model.ApproximateAmount = approximateAmount;
             model.CustomerId = (int) Session["UserId"];
@@ -207,16 +199,10 @@ namespace Web.Controllers
 
         private void MySoldOrders(IEnumerable<IOrder> orders, IEnumerable<IProduct> myProducts, out List<IOrder> mySoldOrders)
         {
-            mySoldOrders = new List<IOrder>();
-            try
-            {
-                mySoldOrders = (from order in orders
-                             join ownProduct in myProducts
-                                 on order.ProductId equals ownProduct.Id
-                             select order).ToList();
-            }
-            catch (Exception)
-            {}
+            mySoldOrders = (from order in orders
+                            join ownProduct in myProducts
+                                on order.ProductId equals ownProduct.Id
+                            select order).ToList();
         }
 
         private void GetAllDataFromDb(out IEnumerable<IOrder> orders, out IEnumerable<IProduct> products, out IEnumerable<IProductsCustomers> productsCustomers,

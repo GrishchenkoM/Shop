@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Web.Mvc;
 using BusinessLogic;
 using Domain.Entities.Interfaces;
@@ -11,6 +10,8 @@ namespace Web.Controllers
 {
     public class FindController : Controller
     {
+        #region public
+
         public FindController(DataManager manager)
         {
             _dataManager = manager;
@@ -21,6 +22,7 @@ namespace Web.Controllers
             ViewBag.SearchString = "";
             return View();
         }
+
         [HttpPost, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
         public ActionResult Index(string searchString)
         {
@@ -30,29 +32,27 @@ namespace Web.Controllers
 
         public ActionResult GetFoundProducts(string searchString)
         {
-            IEnumerable<IProduct> products;
-            if (searchString == "")
-                products = _dataManager.Products.GetProducts();
-            else
-                products = _dataManager.Products.GetProducts().Where(
-                    x => x.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()));
-
+            var products = searchString == "" ? _dataManager.Products.GetProducts() : _dataManager.Products.GetProductsByName(searchString);
             var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers();
 
             if (products == null || productsCustomers == null) return RedirectToAction("Index", "Find");
 
             var model = new SearchViewModel {SearchResultList = new List<IProduct>()};
-
-
             model.SearchResultList = (from product in products
-                                          join prodCust in productsCustomers
-                                              on product.Id equals prodCust.ProductId
-                                          where prodCust.CustomerId == (int)Session["UserId"]
-                                          select product).ToList();
+                                      join prodCust in productsCustomers
+                                          on product.Id equals prodCust.ProductId
+                                      where prodCust.CustomerId == (int) Session["UserId"]
+                                      select product).ToList();
 
             return View("GetProducts",model);
         }
+        
+        #endregion
+
+        #region private
 
         private readonly DataManager _dataManager;
+
+        #endregion
     }
 }

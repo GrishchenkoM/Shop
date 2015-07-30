@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using BusinessLogic;
 using Domain.Entities;
-using Domain.Entities.Interfaces;
 using Web.Models;
 
 namespace Web.Controllers
@@ -12,6 +9,8 @@ namespace Web.Controllers
     [Authorize, HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class ProfileController : Controller
     {
+        #region public
+
         public ProfileController(DataManager manager)
         {
             _dataManager = manager;
@@ -21,8 +20,8 @@ namespace Web.Controllers
         {
             if (Session["UserId"] == null || (int) Session["UserId"] == -1)
                 return RedirectToAction("LogIn", "Account");
-            IEnumerable<ICustomer> customers = _dataManager.Customers.GetCustomers();
-            ICustomer customer = customers.FirstOrDefault(x => x.Id == (int) Session["UserId"]);
+
+            var customer = _dataManager.Customers.GetCustomerById((int)Session["UserId"]);
             if (customer == null)
                 return RedirectToAction("Pity", "Error");
 
@@ -46,10 +45,9 @@ namespace Web.Controllers
         public ActionResult Index(RegisterViewModel model)
         {
             if (ModelState.IsValid)
-            {
                 if ((int) Session["UserId"] > 0)
                 {
-                    ICustomer customer = new Customer
+                    var customer = new Customer
                         {
                             Id = (int) Session["UserId"],
                             Email = model.Email,
@@ -61,17 +59,22 @@ namespace Web.Controllers
                             Address = string.IsNullOrEmpty(model.Address) ? "" : model.Address
                         };
 
-                    if (_dataManager.Customers.UpdateCustomer(customer) == 1)
-                        ViewBag.Message = "Профиль сохранен!";
-                    else
-                        ViewBag.Message = "Не удалось сохранить профиль!";
+                    ViewBag.Message = _dataManager.Customers.UpdateCustomer(customer) == (int)Auxiliary.Result.OperationSuccess 
+                                    ? "Профиль сохранен!" 
+                                    : "Не удалось сохранить профиль!";
                 }
                 else
                     return RedirectToAction("LogIn", "Account");
-            }
+            
             return View(model);
         }
+        
+        #endregion
+
+        #region private
 
         private readonly DataManager _dataManager;
+
+        #endregion
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLogic;
@@ -28,7 +27,7 @@ namespace Web.Controllers
         public ActionResult Index(CreateProduct model, HttpPostedFileBase uploadImage)
         {
             if (uploadImage != null)
-                ReadImage(model, uploadImage);
+                ReadImage(uploadImage, model);
 
             if (ModelState.IsValid && uploadImage != null)
             {
@@ -44,18 +43,13 @@ namespace Web.Controllers
         {
             int result;
             if (answer)
-                result = (int)EditController.Result.OperationSuccess;
+                result = (int)Auxiliary.Result.OperationSuccess;
             else
-                result = (int)EditController.Result.Error;
+                result = (int)Auxiliary.Result.Error;
 
             return RedirectToAction("Finality", "Error", new { id = result });
         }
         
-        public enum Result
-        {
-            Error, AdditionSuccess, OperationSuccess
-        }
-
         #endregion
 
         #region private
@@ -69,11 +63,16 @@ namespace Web.Controllers
             item.IsAvailable = model.IsAvailable;
         }
 
+        private void ReadImage(HttpPostedFileBase uploadImage, CreateProduct model)
+        {
+            Auxiliary.ReadImage(uploadImage, model);
+        }
+
         private bool CreateProduct(CreateProduct model, IProduct item)
         {
             try
             {
-                int currentProductId = _dataManager.Products.AddProduct(item);
+                var currentProductId = _dataManager.Products.AddProduct(item);
                 if (currentProductId == -1) return false;
                 if (_dataManager.ProductsCustomers.AddProdCustRelation(
                     (int)Session["UserId"], currentProductId, model.Count))
@@ -85,20 +84,9 @@ namespace Web.Controllers
             {
                 return false;
             }
-
         }
-
-        private void ReadImage(CreateProduct model, HttpPostedFileBase uploadImage)
-        {
-            // считываем переданный файл в массив байтов
-            byte[] imageData;
-            using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-                imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-            // установка массива байтов
-            model.Image = imageData;
-        }
-
-        private DataManager _dataManager;
+        
+        private readonly DataManager _dataManager;
 
         #endregion
     }

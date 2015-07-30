@@ -20,7 +20,6 @@ namespace Web.Controllers
 
         public ActionResult Index(int id = -1)
         {
-
             HomeViewModel model = null;
 
             CreateModel(ref model, id);
@@ -32,8 +31,10 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Index(HomeViewModel model)
         {
-            string tempSearchString = model.SearchString;
+            var tempSearchString = model.SearchString;
+
             CreateModel(ref model);
+
             ViewBag.SearchString = tempSearchString;
             return View(model);
         }
@@ -43,8 +44,7 @@ namespace Web.Controllers
             IEnumerable<IProduct> products = null;
 
             if (!string.IsNullOrEmpty(searchString))
-                products = _dataManager.Products.GetProducts().Where(
-                    x => x.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()));
+                products = _dataManager.Products.GetProductsByName(searchString);
 
             SearchViewModel model = null;
             if (products != null)
@@ -68,16 +68,18 @@ namespace Web.Controllers
             if (!HomeViewModelSessionExist() && !UserIdSessionExist())
             {
                 SetUserId(id);
-                SetHomeViewModel(ref model, id);
+                SetHomeViewModel(out model, id);
             }
             else if (!HomeViewModelSessionExist() && UserIdSessionExist() &&
                      ((id == -1 && UserIdSession != -1) ||
                       (id != -1 && UserIdSession != id)))
             {
-                if (UserIdSession != -1) SetId(out id);
-                else if (UserIdSession != id) SetUserId(id);
+                if (UserIdSession != -1) 
+                    SetId(out id);
+                else if (UserIdSession != id) 
+                    SetUserId(id);
 
-                SetHomeViewModel(ref model, id);
+                SetHomeViewModel(out model, id);
             }
             else if (HomeViewModelSessionExist() && !UserIdSessionExist())
             {
@@ -90,12 +92,16 @@ namespace Web.Controllers
 
                 if (id == -1)
                 {
-                    if (UserIdSession != -1) SetId(out id);
+                    if (UserIdSession != -1) 
+                        SetId(out id);
+
                     model.CustomerId = id;
                 }
                 else
                 {
-                    if (UserIdSession != id) SetUserId(id);
+                    if (UserIdSession != id) 
+                        SetUserId(id);
+
                     if (model.CustomerId <= 0)
                         model.CustomerId = UserIdSession;
                 }
@@ -104,36 +110,32 @@ namespace Web.Controllers
 
         private void SetContentInModel(HomeViewModel model)
         {
-            IEnumerable<IProductsCustomers> productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers();
-            IEnumerable<IProduct> products = _dataManager.Products.GetProducts();
-            IEnumerable<IOrder> orders = _dataManager.Orders.GetOrders();
+            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers();
+            var products = _dataManager.Products.GetProducts();
+            var orders = _dataManager.Orders.GetOrders();
 
             if (productsCustomers != null && products != null)
             {
                 SetModelProducts(model, products, productsCustomers);
 
                 if (orders != null)
-                    SetModelPopularProducts(model, products, orders, productsCustomers);
+                    SetModelPopularProducts(model);
             }
         }
 
-        private void SetModelPopularProducts(HomeViewModel model, IEnumerable<IProduct> products, IEnumerable<IOrder> orders,
-                                             IEnumerable<IProductsCustomers> productsCustomers)
+        private void SetModelPopularProducts(HomeViewModel model)
         {
             var innerJoinQuery = _dataManager.Products.GetPopularProducts();
-                
             var joinQuery = innerJoinQuery.Distinct();
-            
-            model.PopularProducts = new List<IProduct>();
 
+            model.PopularProducts = new List<IProduct>();
             try
             {
                 foreach (var product in joinQuery)
-                {
                     model.PopularProducts.Add(product);
-                }
             }
-            catch (Exception){}
+            catch (Exception)
+            {}
         }
 
         private void SetModelProducts(HomeViewModel model, IEnumerable<IProduct> products, IEnumerable<IProductsCustomers> productsCustomers)
@@ -145,11 +147,10 @@ namespace Web.Controllers
                 where prodCust.Count > 0
                 orderby prod.Id descending
                 select prod;
+
             model.Products = new List<IProduct>();
             foreach (var product in innerJoinQuery)
-            {
                 model.Products.Add(product);
-            }
         }
         
         private void SetId(out int id)
@@ -167,7 +168,7 @@ namespace Web.Controllers
             model = Session["HomeViewModel"] as HomeViewModel ?? new HomeViewModel { CustomerId = id };
         }
 
-        private void SetHomeViewModel(ref HomeViewModel model, int id)
+        private void SetHomeViewModel(out HomeViewModel model, int id)
         {
             model = new HomeViewModel {CustomerId = id};
             Session["HomeViewModel"] = model;

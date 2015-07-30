@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLogic;
@@ -23,21 +21,16 @@ namespace Web.Controllers
         public ActionResult Index(int id)
         {
             int currentProductId = id;
-            var product = _dataManager.Products.GetProducts()
-                .FirstOrDefault(x => x.Id == currentProductId);
-            if (product == null)
-                return RedirectToAction("Pity", "Error");
+            var product = _dataManager.Products.GetProductById(currentProductId);
+            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomersByProductId(currentProductId);
 
-            var productsCustomers = _dataManager.ProductsCustomers.GetProductsCustomers()
-                .FirstOrDefault(x => x.ProductId == currentProductId);
-
-            if (productsCustomers == null)
+            if (product == null || productsCustomers == null)
                 return RedirectToAction("Pity", "Error");
 
             if (productsCustomers.CustomerId != (int) Session["UserId"])
                 return RedirectToAction("Index", "Purchase", new { id = currentProductId });
 
-            Session.Add("CurrentProductId", currentProductId);
+            Session["CurrentProductId"] = currentProductId;
             _model = new CreateProduct
             {
                 Name = product.Name,
@@ -66,22 +59,22 @@ namespace Web.Controllers
                 if (!ModelState.IsValid) return View(model);
                 if (_dataManager.Products != null)
                 {
-                    var oldProduct = _dataManager.Products.GetProducts()
-                                                 .FirstOrDefault(x => x.Id == model.Id);
+                    var oldProduct = _dataManager.Products.GetProductById(model.Id);
                     if (oldProduct == null)
                         return RedirectToAction("Pity", "Error");
 
-                    IProduct item = new Product();
+                    var item = new Product();
                     ReadModel(model, item);
                     item.Id = (int) Session["CurrentProductId"];
 
                     if (uploadImage != null)
-                        ReadImage(item, uploadImage);
+                        ReadImage(uploadImage, item);
                     else
                         item.Image = oldProduct.Image;
 
                     if (_dataManager.Products != null)
                         answer = UpdateProduct(item, model);
+
                     if (answer)
                         answer = _dataManager.ProductsCustomers.UpdateProdCastRelation(item.Id, model.Count);
                 }
@@ -93,18 +86,13 @@ namespace Web.Controllers
         {
             int result;
             if (answer)
-                result = (int)Result.OperationSuccess;
+                result = (int)Auxiliary.Result.OperationSuccess;
             else
-                result = (int)Result.Error;
+                result = (int)Auxiliary.Result.Error;
 
             return RedirectToAction("Finality", "Error", new { id = result });
         }
-
-        public enum Result
-        {
-            Error, AdditionSuccess, OperationSuccess
-        }
-
+        
         public ActionResult EditMenu()
         {
             return View();
@@ -118,8 +106,9 @@ namespace Web.Controllers
         {
             try
             {
-                int currentProductId = _dataManager.Products.UpdateProduct(item);
-                if (currentProductId == -1) return false;
+                var currentProductId = _dataManager.Products.UpdateProduct(item);
+                if (currentProductId == -1) 
+                    return false;
                 if (_dataManager.ProductsCustomers.UpdateProdCastRelation(currentProductId, model.Count))
                     return true;
                 return false;
@@ -132,13 +121,9 @@ namespace Web.Controllers
 
         private bool DeleteProduct(CreateProduct model)
         {
-            var orders = _dataManager.Orders.GetOrders();
-            if (orders.FirstOrDefault(x => x.ProductId == model.Id) != null)
-            {
-                return _dataManager.ProductsCustomers.DeleteProdCustRelation(model.Id);
-            }
-
-            return _dataManager.Products.DeleteProduct(model.Id);
+            var orders = _dataManager.Orders.GetOrderById(model.Id);
+            return orders != null ? _dataManager.ProductsCustomers.DeleteProdCustRelation(model.Id) 
+                                  : _dataManager.Products.DeleteProduct(model.Id);
         }
 
         private void ReadModel(CreateProduct model, IProduct item)
@@ -150,14 +135,9 @@ namespace Web.Controllers
             item.IsAvailable = model.IsAvailable;
         }
 
-        private void ReadImage(IProduct item, HttpPostedFileBase uploadImage)
+        private void ReadImage(HttpPostedFileBase uploadImage, IProduct item)
         {
-            // считываем переданный файл в массив байтов
-            byte[] imageData;
-            using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-                imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-            // установка массива байтов
-            item.Image = imageData;
+            Auxiliary.ReadImage(uploadImage, item);
         }
 
         private readonly DataManager _dataManager;

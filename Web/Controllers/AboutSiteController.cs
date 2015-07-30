@@ -12,6 +12,5 @@ namespace Web.Controllers
                 ViewBag.CustomerId = (int) Session["UserId"];
             return View();
         }
-
     }
 }

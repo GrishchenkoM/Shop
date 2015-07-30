@@ -6,15 +6,14 @@ namespace Web.Controllers
     [HandleError(ExceptionType = typeof(Exception), View = "Pity")]
     public class ErrorController : Controller
     {
-        //
-        // GET: /Error/
+        #region public
 
         public ActionResult Finality(int id)
         {
             switch (id)
             {
                 case 0:
-                    ViewBag.Message = "Произошла непредвиденная ошибка при добавдении товара";
+                    ViewBag.Message = "Произошла непредвиденная ошибка!";
                     break;
                 case 1:
                     ViewBag.Message = "Товар добавлен!";
@@ -29,5 +28,7 @@ namespace Web.Controllers
         {
             return View();
         }
+        
+        #endregion
     }
 }
