@@ -38,7 +38,7 @@
                 <tr>
                     <td>Фото:</td>
                     <td>
-                        <script>                            UploadImage()</script>
+                        <script>UploadImage()</script>
                         <p><input accept="image/*" id="image" name="uploadImage" type="file" onclick="UploadImage()"/></p>
                         
                     </td>
@@ -82,10 +82,11 @@
             </fieldset>
             <br/>
             <span>
-                <div>
+                <div class="search-button">
                     <input type="submit" value="Сохранить" name="save"/>
                 </div>
-                <div>
+                <br/>
+                <div class="search-button">
                     <input type="submit" value="Удалить" name="delete"/>
                 </div>
             </span>
