@@ -6,54 +6,57 @@
 {
     <div class="box">
         <div class="box-content">
-            <h4 style="text-align: center">Результат поиска:</h4>
-            <br/>
-            @foreach (IProduct product in Model.SearchResultList)
-            {
-                <fieldset>
-                    <div class="items">
-                        <div class ="product-name">
-                            <p>@Html.ActionLink(product.Name, "Index", "Edit", new {id = product.Id}, null)</p>
-                        </div>
-                        <div style="clear: both; height: 20px"></div>
-                        <ul>
-                            <div id="product-image">
-                                @if (product.Image != null)
-                                {
-                                    @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
-                                              + Convert.ToBase64String(product.Image) + "\" />")
-                                }
-                                else
-                                {
-                                    @Html.Label("Фото отсутствует")
-                                }
-                            </div>
-                            <div class ="product-name">
-                                @product.Cost.ToString("### ###,## грн'.'")
-                            </div>
-                            <div id="product-available">
-                                @if (product.IsAvailable)
-                                {
-                                    <div class="instock">
-                                        <img src="../../Content/css/images/cheked_green.png" alt=""/>
-                                        Есть в наличии
-                                    </div>
-                                }
-                                else
-                                {
-                                    <b>Нет на складе</b>
-                                }
-                            </div>
-                            <div style="height: 10px"></div>
-                            <div>
-                                <p>Описание:</p>
-                                @product.Description
-                            </div>
-                        </ul>
-                    </div>
-                </fieldset>
+            <div id="fielset">
+                <h2 style="text-align: center">Результат поиска: @Model.SearchResultList.Count шт.</h2>
+            
                 <br/>
-            }
+                @foreach (IProduct product in Model.SearchResultList)
+                {
+                    <fieldset >
+                        <div class="items">
+                            <div class ="product-name">
+                                <p>@Html.ActionLink(product.Name, "Index", "Edit", new {id = product.Id}, null)</p>
+                            </div>
+                            <div style="clear: both; height: 20px"></div>
+                            <ul>
+                                <div id="product-image">
+                                    @if (product.Image != null)
+                                    {
+                                        @Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpeg;base64,"
+                                                  + Convert.ToBase64String(product.Image) + "\" />")
+                                    }
+                                    else
+                                    {
+                                        @Html.Label("Фото отсутствует")
+                                    }
+                                </div>
+                                <div class ="product-name">
+                                    @product.Cost.ToString("### ###,## грн'.'")
+                                </div>
+                                <div id="product-available">
+                                    @if (product.IsAvailable)
+                                    {
+                                        <div class="instock">
+                                            <img src="../../Content/css/images/cheked_green.png" alt=""/>
+                                            Есть в наличии
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <b>Нет на складе</b>
+                                    }
+                                </div>
+                                <div style="height: 10px"></div>
+                                <div>
+                                    <p>Описание:</p>
+                                    @product.Description
+                                </div>
+                            </ul>
+                        </div>
+                    </fieldset>
+                    <br/>
+                }
+            </div>
         </div>
     </div>
 }

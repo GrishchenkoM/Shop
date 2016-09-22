@@ -51,17 +51,28 @@
             </div>
             <div>
                 @{
-                    string name = string.Format("delete_{0}", item.Product.Id);
-                    <div class="search-button">
-                        <input type="submit" value="Удалить" name="@name"/>
-                    </div>
+                    if (Model.Cart.Lines.Count() > 1)
+                    {
+                        string name = string.Format("delete_{0}", item.Product.Id);
+                        <div class="search-button">
+                            <input type="submit" value="Удалить" name="@name"/>
+                        </div>
+                    }
                 }
             </div>
         </fieldset>
         <br/>
     }
+    <fieldset style="border-radius: 10px;">
+        <table class="my-simple-table" style="margin: auto;">
+            <tr>
+                <th>Сумма к оплате:</th>
+                <td>@(Model.Cart.ComputeTotalValue().ToString("### ###,## грн'.'"))</td>
+            </tr>
+        </table>
+    </fieldset>
 }
-else if(ViewBag.CartIsEmpty != null && ViewBag.CartIsEmpty)
+else if (ViewBag.CartIsEmpty != null && ViewBag.CartIsEmpty)
 {
     <div style="color: red;">
         <strong>Корзина пуста!</strong>

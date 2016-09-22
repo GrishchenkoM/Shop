@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+}
+#center {
+    margin: auto;
+    height: 100%;
+}
+#area {
+    border: 2px solid red;
+}
+#left {
+    float: left;
+}
+#right {
+    float: right;
+}
+#left, #right {
+    width: 200px;
+    border: 1px solid red;
+    background-color: green;
+}
+
+

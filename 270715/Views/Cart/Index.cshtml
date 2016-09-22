@@ -12,7 +12,7 @@
 }
 
 @section Context{
-<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
     <div class="box-content">
         <div style="clear: both; height: 10px"></div>
         <div class="box">
@@ -40,16 +40,6 @@
                             <div class="search-button">
                                 <input type="submit"  value="Очистить корзину" name="delete_all" />
                             </div>
-                            <br/>
-                            <fieldset style="border-radius: 10px;">
-                                <table class="my-simple-table" style="margin: auto;">
-                                    <tr>
-                                        <th>Сумма к оплате:</th>
-                                        <td>@(Model.Cart.ComputeTotalValue().ToString("### ###,## грн'.'"))</td>
-                                    </tr>
-                                </table>
-                            </fieldset>
-
                             <br/>
                             <div class="search-button">
                                 <input type="submit"  value="Купить" name="byu" />

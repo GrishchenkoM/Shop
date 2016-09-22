@@ -41,10 +41,12 @@
 
     <script type="text/javascript">
         
-        $("a[href='#top']").click(function() {
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-            return false;
-        });
+//        $("a[href='#top']").click(function() {
+//            $("html, body").animate({ scrollTop: 0 }, "slow");
+//            return false;
+//        });
+
+        
         
     </script>
     <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
@@ -232,10 +234,13 @@
                         <p>@Html.TextBox("searchString")</p>
                         <br/>
                         <div class="search-button">
-                            <input type="submit"  value="Поиск" />
+                            <input type="submit"  value="Поиск" onclick="slideToggleDiv('fieldset',300)"/>
                         </div>
                         <br/>
-                        <div id="loadingElement" style="display: none; color: red; float: left">ЗАГРУЗКА...</div>
+                        <div id="loadingElement" style="display: none; color: red; text-align: center;">
+                            <img src="/Content/css/images/generator.gif" alt="" style="width: 15px;"/>
+                            ЗАГРУЗКА...
+                        </div>
                         <div id = "foundList">
                             @Html.Action("GetFoundProducts", new { searchString = ViewBag.SearchString })
                         </div>
@@ -260,7 +265,7 @@
 
                 <div id="buttons">
                     <div id="long_button">
-                        <button style="width: 960px; height: 30px;"onclick=" slideToggleDiv('#all-products-list', '#all-products-list-button', 'Показать весь список', 'Скрыть список'); " id="all-products-list-button">Показать весь список</button>
+                        <button style="width: 960px; height: 30px;"onclick=" slideToggleDivButton('#all-products-list', '#all-products-list-button', 'Показать весь список', 'Скрыть список'); " id="all-products-list-button">Показать весь список</button>
                     </div>
                 </div>
 

@@ -111,6 +111,7 @@
     <Content Include="Content\css\images\cart-link.gif" />
     <Content Include="Content\css\images\cat.gif" />
     <Content Include="Content\css\images\cheked_green.png" />
+    <Content Include="Content\css\images\generator.gif" />
     <Content Include="Content\css\images\h2-arr.gif" />
     <Content Include="Content\css\images\header.gif" />
     <Content Include="Content\css\images\ico1.gif" />

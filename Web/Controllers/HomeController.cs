@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web.Mvc;
 using BusinessLogic;
 using Domain.Entities.Interfaces;
@@ -50,6 +51,7 @@ namespace Web.Controllers
             if (products != null)
                 SetSearchResultListModel(ref model, products);
 
+            Thread.Sleep(100);
             return View("GetFoundProducts", model);
         }
 

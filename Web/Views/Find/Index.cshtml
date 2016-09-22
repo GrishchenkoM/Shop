@@ -23,11 +23,14 @@
                 <br/>
                 <div class="search-button">
                     <p>
-                        <input type="submit" value="Найти товар"/>
+                        <input type="submit" value="Найти товар" onclick="slideToggleDiv('fieldSet',1000)"/>
                     </p>
                 </div>
                 <br/>
-                <div id="loadingElement" style="display: none; color: red">ЗАГРУЗКА...</div>
+                <div id="loadingElement" style="display: none; color: red; text-align: center;">
+                    <img src="/Content/css/images/generator.gif" alt="" style="width: 20px;"/>
+                    <p>ЗАГРУЗКА...</p>
+                </div>
             </div>
             <div style="clear: both; height: 10px"></div>
             <div id="foundList">
